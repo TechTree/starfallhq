@@ -427,46 +427,6 @@
     }
 
     /* ── CTA ── */
-    #cta {
-      text-align: center;
-      background: var(--bg);
-      position: relative;
-      overflow: hidden;
-    }
-
-    #cta::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(0,180,216,0.10) 0%, transparent 65%);
-    }
-
-    .cta-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    #cta h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(32px, 4.5vw, 56px);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #fff 40%, var(--accent) 80%, var(--gold) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    #cta p {
-      color: var(--muted);
-      font-size: 17px;
-      margin-bottom: 40px;
-      line-height: 1.7;
-    }
-
     /* ── CONTACT ── */
     #contact {
       background: var(--bg2);
@@ -575,6 +535,7 @@
       footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
     }
   </style>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -585,7 +546,7 @@
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#cta" class="nav-cta">Get Started</a></li>
+    <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
 </nav>
 
@@ -598,7 +559,7 @@
     <h1>Built for what's next.</h1>
     <p class="hero-sub">Starfall helps ambitious teams move faster, build smarter, and launch things that actually matter.</p>
     <div class="btn-group">
-      <a href="#cta" class="btn btn-primary">Get Started &rarr;</a>
+      <a href="#contact" class="btn btn-primary">Get Started &rarr;</a>
       <a href="#services" class="btn btn-ghost">See What We Do</a>
     </div>
   </div>
@@ -662,24 +623,12 @@
 </section>
 
 <!-- CTA -->
-<section id="cta">
-  <div class="cta-inner">
-    <p class="section-label reveal">Ready?</p>
-    <h2 class="reveal">Let's build something<br/>unforgettable.</h2>
-    <p class="reveal">Whether you have a fully-formed idea or just a spark — we'd love to talk. No pitch decks required.</p>
-    <div class="btn-group reveal">
-      <a href="#" class="btn btn-primary">Start a Project &rarr;</a>
-      <a href="#" class="btn btn-ghost">Book a Call</a>
-    </div>
-  </div>
-</section>
-
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <p class="section-label reveal">Get In Touch</p>
-    <h2 class="section-title reveal">Let's talk.</h2>
-    <p class="section-sub reveal" style="margin: 0 auto;">Have a project in mind or just want to say hello? Drop us a message and we'll get back to you within 24 hours.</p>
+    <p class="section-label reveal">Ready?</p>
+    <h2 class="section-title reveal">Let's build something<br/>unforgettable.</h2>
+    <p class="section-sub reveal" style="margin: 0 auto;">Whether you have a fully-formed idea or just a spark — drop us a message and we'll get back to you within 24 hours.</p>
     <form class="contact-form reveal" id="contactForm">
       <div class="form-row">
         <input type="text"  name="name"  placeholder="Your name"  required />
