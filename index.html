@@ -350,19 +350,52 @@
 
     .about-visual {
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .about-orb {
+    /* ── MOON ── */
+    .moon-wrap {
+      position: relative;
       width: 100%;
+      max-width: 380px;
       aspect-ratio: 1;
-      max-width: 400px;
+      animation: float 7s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(0,180,216,0.22)) drop-shadow(0 0 100px rgba(0,180,216,0.09));
+    }
+
+    #moonCanvas {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, rgba(0,180,216,0.45), rgba(0,100,180,0.2) 50%, rgba(244,114,30,0.08));
-      box-shadow:
-        0 0 80px rgba(0,180,216,0.2),
-        inset 0 0 60px rgba(255,255,255,0.04);
-      border: 1px solid rgba(0,180,216,0.15);
-      animation: float 6s ease-in-out infinite;
+      display: block;
+    }
+
+    /* Stars scattered around the moon */
+    .moon-stars {
+      position: absolute;
+      inset: -60px;
+      pointer-events: none;
+    }
+    .moon-stars span {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    .moon-stars span:nth-child(1)  { width:2px; height:2px; top:8%;  left:5%;  opacity:.7; animation-delay:0s; }
+    .moon-stars span:nth-child(2)  { width:1px; height:1px; top:15%; left:88%; opacity:.5; animation-delay:.4s; }
+    .moon-stars span:nth-child(3)  { width:2px; height:2px; top:75%; left:92%; opacity:.8; animation-delay:.8s; }
+    .moon-stars span:nth-child(4)  { width:1px; height:1px; top:88%; left:10%; opacity:.6; animation-delay:1.2s; }
+    .moon-stars span:nth-child(5)  { width:2px; height:2px; top:50%; left:2%;  opacity:.5; animation-delay:1.6s; }
+    .moon-stars span:nth-child(6)  { width:1px; height:1px; top:5%;  left:60%; opacity:.7; animation-delay:2s; }
+    .moon-stars span:nth-child(7)  { width:2px; height:2px; top:92%; left:55%; opacity:.4; animation-delay:.3s; }
+    .moon-stars span:nth-child(8)  { width:1px; height:1px; top:30%; left:95%; opacity:.6; animation-delay:.9s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--op, .6); transform: scale(1); }
+      50%       { opacity: calc(var(--op, .6) * 0.3); transform: scale(0.7); }
     }
 
     @keyframes float {
@@ -428,6 +461,79 @@
       line-height: 1.7;
     }
 
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--bg2);
+      position: relative;
+    }
+    #contact::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--gold), transparent);
+    }
+    .contact-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-form {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      resize: none;
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--muted); }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: rgba(0,180,216,0.5);
+      box-shadow: 0 0 0 3px rgba(0,180,216,0.08);
+    }
+    .contact-form textarea { min-height: 140px; }
+    .contact-form .btn-primary {
+      align-self: stretch;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 32px;
+      background: rgba(0,180,216,0.08);
+      border: 1px solid rgba(0,180,216,0.2);
+      border-radius: 16px;
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
     /* ── FOOTER ── */
     footer {
       padding: 48px;
@@ -472,6 +578,7 @@
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#cta" class="nav-cta">Get Started</a></li>
   </ul>
 </nav>
@@ -548,7 +655,13 @@
 <section id="about">
   <div class="about-inner">
     <div class="about-visual reveal">
-      <div class="about-orb"></div>
+      <div class="moon-wrap">
+        <div class="moon-stars">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <canvas id="moonCanvas"></canvas>
+      </div>
     </div>
     <div>
       <p class="section-label reveal">Our Story</p>
@@ -576,6 +689,27 @@
     <div class="btn-group reveal">
       <a href="#" class="btn btn-primary">Start a Project &rarr;</a>
       <a href="#" class="btn btn-ghost">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label reveal">Get In Touch</p>
+    <h2 class="section-title reveal">Let's talk.</h2>
+    <p class="section-sub reveal" style="margin: 0 auto;">Have a project in mind or just want to say hello? Drop us a message and we'll get back to you within 24 hours.</p>
+    <form class="contact-form reveal" id="contactForm">
+      <div class="form-row">
+        <input type="text"  name="name"  placeholder="Your name"  required />
+        <input type="email" name="email" placeholder="Your email" required />
+      </div>
+      <input type="text" name="subject" placeholder="Subject" />
+      <textarea name="message" placeholder="Tell us about your project..." required></textarea>
+      <button type="submit" class="btn btn-primary">Send Message &rarr;</button>
+    </form>
+    <div class="form-success" id="formSuccess">
+      ✦ &nbsp;Message sent! We'll be in touch soon.
     </div>
   </div>
 </section>
@@ -768,6 +902,272 @@
   }, { threshold: 0.12 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── MOON CANVAS ──
+  (function() {
+    const c  = document.getElementById('moonCanvas');
+    const S  = 600;
+    c.width  = S;
+    c.height = S;
+    const cx = c.getContext('2d');
+    const R  = S / 2;       // moon radius
+    const CX = R, CY = R;   // centre
+
+    // Seed-based pseudo-random for reproducible surface
+    function mulberry32(seed) {
+      return function() {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32(42);
+
+    /* ── 1. Clip to circle ── */
+    cx.save();
+    cx.beginPath();
+    cx.arc(CX, CY, R, 0, Math.PI * 2);
+    cx.clip();
+
+    /* ── 2. Base surface gradient ── */
+    const base = cx.createRadialGradient(CX - R*0.15, CY - R*0.15, R*0.05, CX, CY, R);
+    base.addColorStop(0,   '#f0ede6');
+    base.addColorStop(0.4, '#d6d2ca');
+    base.addColorStop(0.75,'#b8b4ac');
+    base.addColorStop(1,   '#8a877f');
+    cx.fillStyle = base;
+    cx.fillRect(0, 0, S, S);
+
+    /* ── 3. Mare (dark flat plains) ── */
+    const mares = [
+      { x: 0.34, y: 0.30, rx: 0.20, ry: 0.16, a: -0.3, op: 0.38 }, // Mare Tranquillitatis
+      { x: 0.28, y: 0.42, rx: 0.16, ry: 0.13, a:  0.2, op: 0.32 }, // Mare Nubium
+      { x: 0.55, y: 0.27, rx: 0.13, ry: 0.10, a: -0.5, op: 0.30 }, // Mare Serenitatis
+      { x: 0.62, y: 0.42, rx: 0.10, ry: 0.08, a:  0.1, op: 0.28 }, // Mare Crisium
+      { x: 0.42, y: 0.58, rx: 0.14, ry: 0.10, a:  0.4, op: 0.25 }, // Mare Fecunditatis
+      { x: 0.50, y: 0.38, rx: 0.09, ry: 0.07, a:  0.0, op: 0.22 }, // Mare Vaporum
+    ];
+    mares.forEach(m => {
+      cx.save();
+      cx.translate(m.x * S, m.y * S);
+      cx.rotate(m.a);
+      const mg = cx.createRadialGradient(0, 0, 0, 0, 0, m.rx * S);
+      mg.addColorStop(0,   `rgba(60,62,68,${m.op})`);
+      mg.addColorStop(0.6, `rgba(65,67,74,${m.op * 0.6})`);
+      mg.addColorStop(1,    'transparent');
+      cx.scale(1, m.ry / m.rx);
+      cx.beginPath();
+      cx.arc(0, 0, m.rx * S, 0, Math.PI * 2);
+      cx.fillStyle = mg;
+      cx.fill();
+      cx.restore();
+    });
+
+    /* ── 4. Surface texture — subtle noise dots ── */
+    for (let i = 0; i < 1800; i++) {
+      const angle = rand() * Math.PI * 2;
+      const r     = Math.sqrt(rand()) * (R - 2);
+      const tx    = CX + r * Math.cos(angle);
+      const ty    = CY + r * Math.sin(angle);
+      const size  = rand() * 1.8 + 0.3;
+      const op    = rand() * 0.07 + 0.02;
+      cx.beginPath();
+      cx.arc(tx, ty, size, 0, Math.PI * 2);
+      cx.fillStyle = rand() > 0.5
+        ? `rgba(0,0,0,${op})`
+        : `rgba(255,255,255,${op * 0.5})`;
+      cx.fill();
+    }
+
+    /* ── 5. Craters ── */
+    const craters = [
+      // [cx%, cy%, r%, type]  type: 0=normal, 1=large-ray, 2=flooded
+      [0.22, 0.70, 0.055, 1],   // Tycho (large, bright rays)
+      [0.46, 0.20, 0.042, 0],   // Copernicus
+      [0.70, 0.62, 0.032, 0],
+      [0.58, 0.52, 0.026, 0],
+      [0.30, 0.55, 0.022, 2],
+      [0.66, 0.35, 0.020, 0],
+      [0.38, 0.72, 0.018, 0],
+      [0.52, 0.68, 0.016, 0],
+      [0.74, 0.48, 0.014, 0],
+      [0.20, 0.38, 0.013, 0],
+      [0.44, 0.44, 0.012, 2],
+      [0.60, 0.22, 0.011, 0],
+      [0.28, 0.22, 0.010, 0],
+      [0.80, 0.30, 0.009, 0],
+      [0.35, 0.82, 0.009, 0],
+      [0.68, 0.74, 0.008, 0],
+      [0.14, 0.58, 0.008, 0],
+      [0.76, 0.20, 0.007, 0],
+      [0.50, 0.80, 0.007, 0],
+      [0.22, 0.48, 0.006, 0],
+    ];
+
+    // Add ~25 random small craters
+    for (let i = 0; i < 25; i++) {
+      const angle = rand() * Math.PI * 2;
+      const r     = Math.sqrt(rand()) * 0.82;
+      craters.push([
+        0.5 + r * 0.45 * Math.cos(angle),
+        0.5 + r * 0.45 * Math.sin(angle),
+        rand() * 0.007 + 0.003,
+        0
+      ]);
+    }
+
+    craters.forEach(([px, py, pr, type]) => {
+      const x = px * S, y = py * S, r = pr * S;
+
+      // Skip if outside moon disc
+      if (Math.hypot(x - CX, y - CY) > R - r * 0.5) return;
+
+      // Ray streaks for Tycho-style craters
+      if (type === 1) {
+        const rayCount = 14;
+        for (let i = 0; i < rayCount; i++) {
+          const angle = (i / rayCount) * Math.PI * 2;
+          const len   = r * (5 + rand() * 6);
+          cx.save();
+          cx.translate(x, y);
+          cx.rotate(angle);
+          const rg = cx.createLinearGradient(0, 0, len, 0);
+          rg.addColorStop(0,   'rgba(240,238,230,0.18)');
+          rg.addColorStop(0.4, 'rgba(240,238,230,0.07)');
+          rg.addColorStop(1,   'rgba(240,238,230,0)');
+          cx.beginPath();
+          cx.moveTo(r * 0.9, -r * 0.12);
+          cx.lineTo(len, -r * 0.04);
+          cx.lineTo(len,  r * 0.04);
+          cx.lineTo(r * 0.9,  r * 0.12);
+          cx.fillStyle = rg;
+          cx.fill();
+          cx.restore();
+        }
+      }
+
+      // Ejecta blanket (bright apron)
+      const ejecta = cx.createRadialGradient(x, y, r * 0.9, x, y, r * (type === 1 ? 2.2 : 1.7));
+      ejecta.addColorStop(0,   type === 2 ? 'rgba(80,82,88,0.5)'    : 'rgba(220,218,210,0.35)');
+      ejecta.addColorStop(0.5, type === 2 ? 'rgba(80,82,88,0.2)'    : 'rgba(210,208,200,0.15)');
+      ejecta.addColorStop(1,   'transparent');
+      cx.beginPath();
+      cx.arc(x, y, r * (type === 1 ? 2.2 : 1.7), 0, Math.PI * 2);
+      cx.fillStyle = ejecta;
+      cx.fill();
+
+      // Crater floor
+      const floor = cx.createRadialGradient(x, y, 0, x, y, r * 0.95);
+      if (type === 2) {
+        // Flooded — dark lava floor
+        floor.addColorStop(0,   'rgba(68,70,76,0.9)');
+        floor.addColorStop(0.7, 'rgba(72,74,80,0.85)');
+        floor.addColorStop(1,   'rgba(80,82,88,0.6)');
+      } else {
+        floor.addColorStop(0,   'rgba(170,167,158,0.7)');
+        floor.addColorStop(0.6, 'rgba(150,147,138,0.8)');
+        floor.addColorStop(1,   'rgba(120,117,110,0.85)');
+      }
+      cx.beginPath();
+      cx.arc(x, y, r * 0.95, 0, Math.PI * 2);
+      cx.fillStyle = floor;
+      cx.fill();
+
+      // Crater wall shadow (bottom-right inner)
+      const shadow = cx.createRadialGradient(x + r*0.2, y + r*0.2, r*0.3, x, y, r);
+      shadow.addColorStop(0,   'transparent');
+      shadow.addColorStop(0.7, 'transparent');
+      shadow.addColorStop(1,   'rgba(0,0,0,0.45)');
+      cx.beginPath();
+      cx.arc(x, y, r, 0, Math.PI * 2);
+      cx.fillStyle = shadow;
+      cx.fill();
+
+      // Crater rim highlight (top-left)
+      const rimAngle = -Math.PI * 0.35;
+      const rim = cx.createLinearGradient(
+        x + Math.cos(rimAngle) * r, y + Math.sin(rimAngle) * r,
+        x - Math.cos(rimAngle) * r, y - Math.sin(rimAngle) * r
+      );
+      rim.addColorStop(0,    'rgba(255,254,248,0.6)');
+      rim.addColorStop(0.08, 'rgba(255,254,248,0.3)');
+      rim.addColorStop(0.2,  'transparent');
+      rim.addColorStop(0.8,  'transparent');
+      rim.addColorStop(1,    'rgba(0,0,0,0.2)');
+      cx.beginPath();
+      cx.arc(x, y, r, 0, Math.PI * 2);
+      cx.strokeStyle = rim;
+      cx.lineWidth   = r * 0.28;
+      cx.stroke();
+
+      // Central peak for large craters
+      if (r > 12 && type !== 2) {
+        const peak = cx.createRadialGradient(x, y, 0, x, y, r * 0.18);
+        peak.addColorStop(0,   'rgba(230,228,220,0.9)');
+        peak.addColorStop(0.5, 'rgba(200,198,190,0.5)');
+        peak.addColorStop(1,   'transparent');
+        cx.beginPath();
+        cx.arc(x, y, r * 0.18, 0, Math.PI * 2);
+        cx.fillStyle = peak;
+        cx.fill();
+      }
+    });
+
+    /* ── 6. Limb darkening (edges darker, realistic sphere look) ── */
+    const limb = cx.createRadialGradient(CX, CY, R * 0.55, CX, CY, R);
+    limb.addColorStop(0,   'transparent');
+    limb.addColorStop(0.7, 'transparent');
+    limb.addColorStop(1,   'rgba(0,0,0,0.42)');
+    cx.beginPath();
+    cx.arc(CX, CY, R, 0, Math.PI * 2);
+    cx.fillStyle = limb;
+    cx.fill();
+
+    /* ── 7. Subtle specular highlight ── */
+    const spec = cx.createRadialGradient(CX - R*0.22, CY - R*0.22, 0, CX - R*0.22, CY - R*0.22, R * 0.55);
+    spec.addColorStop(0,   'rgba(255,255,250,0.14)');
+    spec.addColorStop(0.4, 'rgba(255,255,250,0.05)');
+    spec.addColorStop(1,   'transparent');
+    cx.beginPath();
+    cx.arc(CX, CY, R, 0, Math.PI * 2);
+    cx.fillStyle = spec;
+    cx.fill();
+
+    cx.restore();
+  })();
+
+  // ── CONTACT FORM ──
+  document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const data = new FormData(this);
+    const body = Object.fromEntries(data.entries());
+
+    try {
+      const res = await fetch('https://formspree.io/f/vzasyp@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        btn.textContent = 'Send Message →';
+        btn.disabled = false;
+        alert('Something went wrong. Please email us directly at vzasyp@gmail.com');
+      }
+    } catch {
+      btn.textContent = 'Send Message →';
+      btn.disabled = false;
+      alert('Network error. Please email us directly at vzasyp@gmail.com');
+    }
+  });
 </script>
 </body>
 </html>
