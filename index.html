@@ -322,110 +322,6 @@
 
     .stat-label { color: var(--muted); font-size: 14px; font-weight: 500; }
 
-    /* ── ABOUT ── */
-    #about {
-      position: relative;
-      overflow: hidden;
-      padding: 0;
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Galaxy fills entire section */
-    .galaxy-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    #galaxyCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      pointer-events: none;
-    }
-
-    /* Dark vignette overlay — darkens center AND edges */
-    .galaxy-overlay {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 55% 55% at 50% 50%, rgba(8,11,14,0.28) 0%, rgba(8,11,14,0.42) 45%, rgba(8,11,14,0.88) 100%);
-      pointer-events: none;
-    }
-
-    /* Text content floats centred on top — frosted glass card */
-    .about-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 680px;
-      text-align: center;
-      padding: 72px 56px;
-      background: rgba(8, 11, 14, 0.55);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(0, 180, 216, 0.1);
-      border-radius: 24px;
-    }
-
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 32px;
-      justify-content: center;
-    }
-
-    /* Stars scattered (keep but hide — no longer needed outside orb) */
-    .moon-stars {
-      display: none;
-    }
-    .moon-stars span {
-      position: absolute;
-      border-radius: 50%;
-      background: white;
-      animation: twinkle 3s ease-in-out infinite;
-    }
-    .moon-stars span:nth-child(1)  { width:2px; height:2px; top:8%;  left:5%;  opacity:.7; animation-delay:0s; }
-    .moon-stars span:nth-child(2)  { width:1px; height:1px; top:15%; left:88%; opacity:.5; animation-delay:.4s; }
-    .moon-stars span:nth-child(3)  { width:2px; height:2px; top:75%; left:92%; opacity:.8; animation-delay:.8s; }
-    .moon-stars span:nth-child(4)  { width:1px; height:1px; top:88%; left:10%; opacity:.6; animation-delay:1.2s; }
-    .moon-stars span:nth-child(5)  { width:2px; height:2px; top:50%; left:2%;  opacity:.5; animation-delay:1.6s; }
-    .moon-stars span:nth-child(6)  { width:1px; height:1px; top:5%;  left:60%; opacity:.7; animation-delay:2s; }
-    .moon-stars span:nth-child(7)  { width:2px; height:2px; top:92%; left:55%; opacity:.4; animation-delay:.3s; }
-    .moon-stars span:nth-child(8)  { width:1px; height:1px; top:30%; left:95%; opacity:.6; animation-delay:.9s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: var(--op, .6); transform: scale(1); }
-      50%       { opacity: calc(var(--op, .6) * 0.3); transform: scale(0.7); }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-    }
-
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 32px;
-    }
-
-    .tag {
-      background: rgba(0,180,216,0.08);
-      border: 1px solid rgba(0,180,216,0.22);
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 6px 16px;
-      border-radius: 100px;
-    }
-
     /* ── CTA ── */
     /* ── CONTACT ── */
     #contact {
@@ -531,7 +427,6 @@
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
       section { padding: 80px 24px; }
-      .about-inner { grid-template-columns: 1fr; gap: 40px; }
       footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
     }
   </style>
@@ -574,53 +469,29 @@
   </div>
   <div class="services-grid">
     <div class="service-card reveal reveal-delay-1">
-      <div class="service-icon" style="background:rgba(0,180,216,0.13)">🚀</div>
-      <h3>Launch Strategy</h3>
-      <p>We craft go-to-market plans that cut through noise and get your product in front of the right people from day one.</p>
+      <div class="service-icon" style="background:rgba(0,180,216,0.13)">🌐</div>
+      <h3>Web Development</h3>
+      <p>Fast, polished websites built from scratch. Whether it's a landing page or a full product — we ship clean code that performs.</p>
     </div>
     <div class="service-card reveal reveal-delay-2">
-      <div class="service-icon" style="background:rgba(244,114,30,0.13)">⚡</div>
-      <h3>Performance Engineering</h3>
-      <p>Blazing-fast systems built to scale. From backend architecture to edge delivery — we sweat the details.</p>
+      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📱</div>
+      <h3>App Development</h3>
+      <p>Mobile and web apps built for real users. From concept to launch, we handle architecture, design, and delivery.</p>
     </div>
     <div class="service-card reveal reveal-delay-3">
-      <div class="service-icon" style="background:rgba(0,180,216,0.13)">✦</div>
-      <h3>Brand & Design</h3>
-      <p>Visual identities that feel inevitable. We make your brand look like it was always meant to exist.</p>
+      <div class="service-icon" style="background:rgba(0,180,216,0.13)">🔍</div>
+      <h3>SEO</h3>
+      <p>Get found. We build search strategies that drive compounding organic traffic — technical SEO, content, and authority combined.</p>
     </div>
     <div class="service-card reveal reveal-delay-4">
-      <div class="service-icon" style="background:rgba(244,114,30,0.13)">🌐</div>
+      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📈</div>
       <h3>Growth & Analytics</h3>
-      <p>Data-driven decisions, not guesses. We instrument, analyze, and optimize every step of the funnel.</p>
+      <p>Data-driven decisions, not guesses. We instrument, analyze, and optimize every step of your funnel to turn visitors into customers.</p>
     </div>
   </div>
 </section>
 
 
-<!-- ABOUT -->
-<section id="about">
-  <!-- Galaxy fills the whole section -->
-  <div class="galaxy-bg">
-    <canvas id="galaxyCanvas"></canvas>
-  </div>
-  <div class="galaxy-overlay"></div>
-
-  <!-- Text centred on top -->
-  <div class="about-inner">
-      <p class="section-label reveal">Our Story</p>
-      <h2 class="section-title reveal">We don't just build.<br/>We obsess.</h2>
-      <p class="section-sub reveal" style="margin-bottom:24px;margin:0 auto 24px;">Starfall was founded by a team of builders who got tired of watching great ideas fail because of poor execution. We exist to bridge the gap between vision and reality — fast.</p>
-      <p class="section-sub reveal" style="margin:0 auto;">Every project gets the full force of our attention. No junior handoffs. No templated solutions. Just deep work, done right.</p>
-      <div class="about-tags reveal">
-        <span class="tag">Strategy</span>
-        <span class="tag">Design Systems</span>
-        <span class="tag">Web3</span>
-        <span class="tag">AI Integration</span>
-        <span class="tag">SaaS</span>
-        <span class="tag">Startups</span>
-      </div>
-  </div>
-</section>
 
 <!-- CTA -->
 <!-- CONTACT -->
@@ -648,11 +519,6 @@
 <footer>
   <a href="#" class="logo">Starfall</a>
   <p>© 2026 Starfall. All rights reserved.</p>
-  <ul class="footer-links">
-    <li><a href="#">Twitter</a></li>
-    <li><a href="#">LinkedIn</a></li>
-    <li><a href="#">Privacy</a></li>
-  </ul>
 </footer>
 
 <script>
@@ -848,203 +714,6 @@
   }, { threshold: 0.12 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // ── GALAXY CANVAS ──
-  (function() {
-    const c   = document.getElementById('galaxyCanvas');
-    const ctx = c.getContext('2d');
-
-    // ── all vars declared first ──
-    let S = 0, H = 0, O = 0;
-    let bgStars  = [];
-    let glxStars = [];
-    let ready    = false;
-    let rot      = 0;
-    let seed     = 77;
-
-    function rand() {
-      seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5;
-      return (seed >>> 0) / 4294967296;
-    }
-
-    function starColor(t) {
-      const p = rand();
-      if (t < 0.12) return [255, (230+rand()*25)|0, (160+rand()*60)|0];
-      if (p < 0.20) return [(160+rand()*30)|0, (190+rand()*30)|0, 255];
-      if (p < 0.50) return [(230+rand()*25)|0, (240+rand()*15)|0, 255];
-      if (p < 0.75) return [255, 255, (230+rand()*25)|0];
-      if (p < 0.90) return [255, (210+rand()*30)|0, (140+rand()*60)|0];
-      return [255, (160+rand()*30)|0, (100+rand()*40)|0];
-    }
-
-    function initStars() {
-      seed = 77;          // reset so galaxy always looks the same
-      bgStars  = [];
-      glxStars = [];
-      const WINDING = 2.9, CORE_R = 10, MAX_R = O * 0.86;
-
-      // Background field (coords relative to canvas centre)
-      for (let i = 0; i < 600; i++) {
-        const a = rand() * Math.PI * 2;
-        const r = Math.sqrt(rand()) * O * 1.4;
-        bgStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
-                       s: rand()*0.8+0.2, op: rand()*0.3+0.05 });
-      }
-
-      // Spiral arms
-      const arms = [
-        { off: 0,            n: 1100 },
-        { off: Math.PI,      n: 1100 },
-        { off: Math.PI*0.5,  n: 400  },
-        { off: Math.PI*1.5,  n: 400  },
-      ];
-      for (const arm of arms) {
-        for (let i = 0; i < arm.n; i++) {
-          const t  = i / arm.n;
-          const rad = CORE_R + t * (MAX_R - CORE_R);
-          const sa  = WINDING * Math.log(rad / CORE_R) + arm.off;
-          const da  = (rand()-0.5) * (0.35 + t*0.95);
-          const dr  = (rand()-0.5) * rad * 0.18;
-          const a   = sa + da;
-          const r   = Math.max(5, rad + dr);
-          const col = starColor(t);
-          glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
-                          s: rand()*1.8+0.4,
-                          r: col[0], g: col[1], b: col[2],
-                          a: (rand()*0.70+0.40)*(1-t*0.30) });
-        }
-      }
-
-      // Core bulge
-      for (let i = 0; i < 800; i++) {
-        const a   = rand() * Math.PI * 2;
-        const r   = Math.pow(rand(), 2.2) * O * 0.26;
-        const col = starColor(0.05);
-        glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
-                        s: rand()*1.4+0.4,
-                        r: col[0], g: col[1], b: col[2],
-                        a: rand()*0.65+0.50 });
-      }
-
-      // Halo
-      for (let i = 0; i < 300; i++) {
-        const a = rand() * Math.PI * 2;
-        const r = (rand()*0.4+0.55) * MAX_R;
-        glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
-                        s: rand()*0.7+0.2, r: 200, g: 215, b: 255,
-                        a: rand()*0.18+0.04 });
-      }
-
-      ready = true;
-    }
-
-    function resize() {
-      S = c.width  = c.offsetWidth;
-      H = c.height = c.offsetHeight;
-      O = Math.min(S, H) / 2;
-      if (O > 0) { ready = false; initStars(); }
-    }
-
-    const nebulae = [
-      [0.5,         0.32, 0.58, 0.22, [50,  20,180], 0.10],
-      [0.5+Math.PI, 0.32, 0.58, 0.22, [180, 20, 90], 0.10],
-      [2.1,         0.44, 0.49, 0.17, [20,  60,200], 0.085],
-      [2.1+Math.PI, 0.44, 0.49, 0.17, [200, 80, 20], 0.085],
-      [3.7,         0.23, 0.40, 0.14, [100, 20,180], 0.075],
-      [3.7+Math.PI, 0.23, 0.40, 0.14, [180,100, 20], 0.075],
-      [1.2,         0.57, 0.34, 0.13, [20, 140,180], 0.060],
-      [1.2+Math.PI, 0.57, 0.34, 0.13, [180, 60, 20], 0.060],
-    ];
-
-    function draw() {
-      if (!ready) { requestAnimationFrame(draw); return; }
-
-      const cx = S/2, cy = H/2;
-      ctx.clearRect(0, 0, S, H);
-
-      // Background stars
-      ctx.globalCompositeOperation = 'source-over';
-      for (const s of bgStars) {
-        ctx.beginPath();
-        ctx.arc(cx+s.x, cy+s.y, s.s, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(200,215,255,${s.op})`;
-        ctx.fill();
-      }
-
-      // Rotating galaxy centred
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rot);
-
-      ctx.globalCompositeOperation = 'lighter';
-
-      // Outer halo
-      const halo = ctx.createRadialGradient(0,0,O*0.25,0,0,O*0.92);
-      halo.addColorStop(0,   'rgba(120,60,220,0.06)');
-      halo.addColorStop(0.5, 'rgba(80,40,160,0.03)');
-      halo.addColorStop(1,   'transparent');
-      ctx.beginPath(); ctx.arc(0,0,O*0.92,0,Math.PI*2);
-      ctx.fillStyle = halo; ctx.fill();
-
-      // Nebula clouds
-      for (const [na,nrf,nwf,nhf,nc,nop] of nebulae) {
-        const nr=nrf*O, nw=nwf*O, nh=nhf*O;
-        ctx.save();
-        ctx.rotate(na); ctx.translate(nr,0); ctx.scale(1,nh/nw);
-        const ng = ctx.createRadialGradient(0,0,0,0,0,nw);
-        ng.addColorStop(0,   `rgba(${nc[0]},${nc[1]},${nc[2]},${nop})`);
-        ng.addColorStop(0.5, `rgba(${nc[0]},${nc[1]},${nc[2]},${nop*0.35})`);
-        ng.addColorStop(1,   'transparent');
-        ctx.beginPath(); ctx.arc(0,0,nw,0,Math.PI*2);
-        ctx.fillStyle = ng; ctx.fill();
-        ctx.restore();
-      }
-
-      // Core glow
-      const cg = ctx.createRadialGradient(0,0,0,0,0,O*0.38);
-      cg.addColorStop(0,    'rgba(255,245,195,0.95)');
-      cg.addColorStop(0.10, 'rgba(255,220,130,0.62)');
-      cg.addColorStop(0.28, 'rgba(220,150,70,0.28)');
-      cg.addColorStop(0.55, 'rgba(160,90,50,0.10)');
-      cg.addColorStop(1,    'transparent');
-      ctx.beginPath(); ctx.arc(0,0,O*0.30,0,Math.PI*2);
-      ctx.fillStyle = cg; ctx.fill();
-
-      // Stars
-      for (const s of glxStars) {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(${s.r},${s.g},${s.b},${s.a})`;
-        ctx.fill();
-      }
-
-      // Nucleus
-      const nuc = ctx.createRadialGradient(0,0,0,0,0,20);
-      nuc.addColorStop(0,   'rgba(255,255,248,1.0)');
-      nuc.addColorStop(0.2, 'rgba(255,245,200,0.85)');
-      nuc.addColorStop(0.5, 'rgba(255,210,140,0.35)');
-      nuc.addColorStop(1,   'transparent');
-      ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2);
-      ctx.fillStyle = nuc; ctx.fill();
-
-      // Dust / edge fade
-      ctx.globalCompositeOperation = 'source-over';
-      const dust = ctx.createRadialGradient(0,0,O*0.08,0,0,O*0.88);
-      dust.addColorStop(0,   'transparent');
-      dust.addColorStop(0.6, 'rgba(3,4,9,0.05)');
-      dust.addColorStop(1,   'rgba(3,4,9,0.35)');
-      ctx.beginPath(); ctx.arc(0,0,O*0.88,0,Math.PI*2);
-      ctx.fillStyle = dust; ctx.fill();
-
-      ctx.restore();
-      rot += 0.00038;
-      requestAnimationFrame(draw);
-    }
-
-    // Defer so the DOM is fully laid out before we read offsetWidth/Height
-    requestAnimationFrame(() => { resize(); draw(); });
-    window.addEventListener('resize', resize);
-  })();
 
   // ── CONTACT FORM ──
   document.getElementById('contactForm').addEventListener('submit', async function(e) {
