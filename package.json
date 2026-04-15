@@ -2,5 +2,8 @@
   "name": "starfall",
   "version": "1.0.0",
   "description": "Starfall — a modern interactive website",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
 }
