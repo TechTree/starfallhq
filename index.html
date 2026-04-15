@@ -324,59 +324,60 @@
 
     /* ── ABOUT ── */
     #about {
-      background: var(--bg2);
       position: relative;
       overflow: hidden;
-    }
-
-    #about::after {
-      content: '';
-      position: absolute;
-      right: -200px; top: 50%;
-      transform: translateY(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,180,216,0.07), transparent 70%);
-      pointer-events: none;
-    }
-
-    .about-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .about-visual {
-      position: relative;
+      padding: 0;
+      min-height: 90vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* ── MOON ── */
-    .moon-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 380px;
-      aspect-ratio: 1;
-      animation: float 7s ease-in-out infinite;
-      filter: drop-shadow(0 0 40px rgba(0,180,216,0.22)) drop-shadow(0 0 100px rgba(0,180,216,0.09));
-    }
-
-    #moonCanvas {
+    /* Galaxy fills entire section */
+    .galaxy-bg {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
-      border-radius: 50%;
-      display: block;
+      pointer-events: none;
     }
 
-    /* Stars scattered around the moon */
-    .moon-stars {
-      position: absolute;
-      inset: -60px;
+    #galaxyCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
       pointer-events: none;
+    }
+
+    /* Dark vignette overlay so text is readable */
+    .galaxy-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 50%, transparent 30%, rgba(8,11,14,0.55) 70%, rgba(8,11,14,0.85) 100%);
+      pointer-events: none;
+    }
+
+    /* Text content floats centred on top */
+    .about-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      text-align: center;
+      padding: 120px 48px;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+      justify-content: center;
+    }
+
+    /* Stars scattered (keep but hide — no longer needed outside orb) */
+    .moon-stars {
+      display: none;
     }
     .moon-stars span {
       position: absolute;
@@ -629,45 +630,21 @@
   </div>
 </section>
 
-<!-- STATS -->
-<section id="stats">
-  <div class="stats-inner">
-    <div class="reveal">
-      <div class="stat-number">200+</div>
-      <div class="stat-label">Projects Launched</div>
-    </div>
-    <div class="reveal reveal-delay-1">
-      <div class="stat-number">98%</div>
-      <div class="stat-label">Client Satisfaction</div>
-    </div>
-    <div class="reveal reveal-delay-2">
-      <div class="stat-number">40+</div>
-      <div class="stat-label">Industries Served</div>
-    </div>
-    <div class="reveal reveal-delay-3">
-      <div class="stat-number">5★</div>
-      <div class="stat-label">Average Rating</div>
-    </div>
-  </div>
-</section>
 
 <!-- ABOUT -->
 <section id="about">
+  <!-- Galaxy fills the whole section -->
+  <div class="galaxy-bg">
+    <canvas id="galaxyCanvas"></canvas>
+  </div>
+  <div class="galaxy-overlay"></div>
+
+  <!-- Text centred on top -->
   <div class="about-inner">
-    <div class="about-visual reveal">
-      <div class="moon-wrap">
-        <div class="moon-stars">
-          <span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span>
-        </div>
-        <canvas id="moonCanvas"></canvas>
-      </div>
-    </div>
-    <div>
       <p class="section-label reveal">Our Story</p>
       <h2 class="section-title reveal">We don't just build.<br/>We obsess.</h2>
-      <p class="section-sub reveal" style="margin-bottom:24px;">Starfall was founded by a team of builders who got tired of watching great ideas fail because of poor execution. We exist to bridge the gap between vision and reality — fast.</p>
-      <p class="section-sub reveal">Every project gets the full force of our attention. No junior handoffs. No templated solutions. Just deep work, done right.</p>
+      <p class="section-sub reveal" style="margin-bottom:24px;margin:0 auto 24px;">Starfall was founded by a team of builders who got tired of watching great ideas fail because of poor execution. We exist to bridge the gap between vision and reality — fast.</p>
+      <p class="section-sub reveal" style="margin:0 auto;">Every project gets the full force of our attention. No junior handoffs. No templated solutions. Just deep work, done right.</p>
       <div class="about-tags reveal">
         <span class="tag">Strategy</span>
         <span class="tag">Design Systems</span>
@@ -676,7 +653,6 @@
         <span class="tag">SaaS</span>
         <span class="tag">Startups</span>
       </div>
-    </div>
   </div>
 </section>
 
@@ -726,165 +702,219 @@
 </footer>
 
 <script>
-  // ── PARTICLE NETWORK ──
-  const canvas = document.getElementById('starCanvas');
-  const ctx = canvas.getContext('2d');
+  // ── PARTICLE NETWORK (DNA spawn) ──
+  (function () {
+    const canvas = document.getElementById('starCanvas');
+    const ctx    = canvas.getContext('2d');
 
-  let W, H, nodes = [];
-  const NODE_COUNT   = 90;
-  const LINK_DIST    = 140;   // max px to draw a connecting line
-  const DRAG_RADIUS  = 50;    // how close you need to click to grab a node
-  const NODE_COLOR   = '0,180,216';
-  const LINE_COLOR   = '0,180,216';
+    const NODE_COLOR = '0,180,216';
+    const LINE_COLOR = '0,180,216';
+    const LINK_DIST  = 150;
+    const DRAG_RAD   = 50;
+    const REPEL_RAD  = 120;    // mouse hover pushes nodes within this radius
+    const REPEL_STR  = 2.8;    // push strength
 
-  // Drag state
-  let dragging = null;   // the node being dragged
-  let mouse    = { x: -9999, y: -9999 };
+    let W = 0, H = 0;
+    let nodes = [];
+    let dragging = null;
+    let mouse = { x: -9999, y: -9999 };
 
-  /* ── resize ── */
-  function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-  }
-
-  /* ── create nodes ── */
-  function initNodes() {
-    nodes = [];
-    for (let i = 0; i < NODE_COUNT; i++) {
-      nodes.push({
-        x:   Math.random() * W,
-        y:   Math.random() * H,
-        vx:  (Math.random() - 0.5) * 0.55,
-        vy:  (Math.random() - 0.5) * 0.55,
-        r:   Math.random() * 2 + 1.5,   // radius 1.5 – 3.5 px
-      });
-    }
-  }
-
-  /* ── main loop ── */
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // ── update positions ──
-    for (const n of nodes) {
-      if (n === dragging) continue;   // dragged node stays under cursor
-      n.x += n.vx;
-      n.y += n.vy;
-      // bounce off edges
-      if (n.x < 0)  { n.x = 0;  n.vx *= -1; }
-      if (n.x > W)  { n.x = W;  n.vx *= -1; }
-      if (n.y < 0)  { n.y = 0;  n.vy *= -1; }
-      if (n.y > H)  { n.y = H;  n.vy *= -1; }
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
     }
 
-    // ── draw connecting lines ──
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const a  = nodes[i], b = nodes[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d  = Math.sqrt(dx*dx + dy*dy);
-        if (d > LINK_DIST) continue;
+    /* ── Spawn nodes in small DNA helix clusters ── */
+    function initNodes() {
+      nodes = [];
+      const CLUSTERS      = 6;          // number of mini DNA strands
+      const NODES_PER_ARM = 7;          // nodes per strand (x2 for double helix)
+      const HELIX_R       = 22;         // helix radius in px
+      const HELIX_STEP    = 18;         // vertical spacing between node pairs
 
-        // opacity fades with distance; brighter near clusters
-        const alpha = (1 - d / LINK_DIST) * 0.45;
-        ctx.beginPath();
-        ctx.moveTo(a.x, a.y);
-        ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = `rgba(${LINE_COLOR},${alpha})`;
-        ctx.lineWidth   = 0.8;
-        ctx.stroke();
+      for (let c = 0; c < CLUSTERS; c++) {
+        // random centre for this cluster
+        const cx = W * 0.1 + Math.random() * W * 0.8;
+        const cy = H * 0.1 + Math.random() * H * 0.8;
+        // random tilt angle for variety
+        const tilt = Math.random() * Math.PI * 2;
+
+        for (let i = 0; i < NODES_PER_ARM; i++) {
+          const t     = i / NODES_PER_ARM;
+          const angle = t * Math.PI * 2.5 + c;  // ~1.25 turns per mini-helix
+
+          // strand 1
+          const lx1 = Math.cos(angle) * HELIX_R;
+          const ly1 = (i - NODES_PER_ARM / 2) * HELIX_STEP;
+          // rotate by tilt
+          const rx1 = cx + lx1 * Math.cos(tilt) - ly1 * Math.sin(tilt);
+          const ry1 = cy + lx1 * Math.sin(tilt) + ly1 * Math.cos(tilt);
+
+          nodes.push({
+            x: rx1, y: ry1,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            r:  Math.random() * 1.5 + 2,
+          });
+
+          // strand 2 (π offset)
+          const lx2 = Math.cos(angle + Math.PI) * HELIX_R;
+          const ly2 = ly1;
+          const rx2 = cx + lx2 * Math.cos(tilt) - ly2 * Math.sin(tilt);
+          const ry2 = cy + lx2 * Math.sin(tilt) + ly2 * Math.cos(tilt);
+
+          nodes.push({
+            x: rx2, y: ry2,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            r:  Math.random() * 1.5 + 2,
+          });
+        }
       }
     }
 
-    // ── draw nodes ──
-    for (const n of nodes) {
-      // outer glow
-      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
-      grd.addColorStop(0,   `rgba(${NODE_COLOR},0.25)`);
-      grd.addColorStop(1,   `rgba(${NODE_COLOR},0)`);
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
+    /* ── main loop ── */
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
 
-      // solid dot
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${NODE_COLOR},0.85)`;
-      ctx.fill();
+      for (const n of nodes) {
+        if (n === dragging) continue;
+
+        // mouse repulsion (hover effect — push nodes away)
+        const mdx = n.x - mouse.x;
+        const mdy = n.y - mouse.y;
+        const md  = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (md < REPEL_RAD && md > 0.1) {
+          const force = (1 - md / REPEL_RAD) * REPEL_STR;
+          n.vx += (mdx / md) * force;
+          n.vy += (mdy / md) * force;
+        }
+
+        // drift & friction
+        n.x  += n.vx;
+        n.y  += n.vy;
+        n.vx *= 0.985;
+        n.vy *= 0.985;
+
+        // bounce
+        if (n.x < 0)  { n.x = 0;  n.vx *= -0.7; }
+        if (n.x > W)  { n.x = W;  n.vx *= -0.7; }
+        if (n.y < 0)  { n.y = 0;  n.vy *= -0.7; }
+        if (n.y > H)  { n.y = H;  n.vy *= -0.7; }
+
+        // very gentle random drift so they slowly reform clusters
+        n.vx += (Math.random() - 0.5) * 0.015;
+        n.vy += (Math.random() - 0.5) * 0.015;
+      }
+
+      // connecting lines
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
+          if (d > LINK_DIST) continue;
+          const alpha = (1 - d / LINK_DIST) * 0.4;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(${LINE_COLOR},${alpha})`;
+          ctx.lineWidth   = 0.7;
+          ctx.stroke();
+        }
+      }
+
+      // nodes
+      for (const n of nodes) {
+        // glow
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
+        g.addColorStop(0, `rgba(${NODE_COLOR},0.25)`);
+        g.addColorStop(1, `rgba(${NODE_COLOR},0)`);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+        // dot
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${NODE_COLOR},0.85)`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
     }
 
-    requestAnimationFrame(draw);
-  }
-
-  /* ── drag helpers ── */
-  function nearestNode(px, py) {
-    let best = null, bestD = Infinity;
-    for (const n of nodes) {
-      const d = Math.hypot(n.x - px, n.y - py);
-      if (d < bestD) { bestD = d; best = n; }
+    /* ── drag & hover ── */
+    function nearest(px, py) {
+      let best = null, bd = Infinity;
+      for (const n of nodes) {
+        const d = Math.hypot(n.x - px, n.y - py);
+        if (d < bd) { bd = d; best = n; }
+      }
+      return bd < DRAG_RAD ? best : null;
     }
-    return bestD < DRAG_RADIUS ? best : null;
-  }
 
-  canvas.addEventListener('mousedown', e => {
-    const rect = canvas.getBoundingClientRect();
-    dragging = nearestNode(e.clientX - rect.left, e.clientY - rect.top);
-    if (dragging) canvas.style.cursor = 'grabbing';
-  });
+    canvas.addEventListener('mousedown', e => {
+      const r = canvas.getBoundingClientRect();
+      dragging = nearest(e.clientX - r.left, e.clientY - r.top);
+      if (dragging) canvas.style.cursor = 'grabbing';
+    });
 
-  canvas.addEventListener('mousemove', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    if (dragging) {
-      dragging.x = mouse.x;
-      dragging.y = mouse.y;
-    } else {
-      // show grab cursor when hovering near a node
-      canvas.style.cursor = nearestNode(mouse.x, mouse.y) ? 'grab' : 'default';
-    }
-  });
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+      if (dragging) {
+        dragging.x = mouse.x;
+        dragging.y = mouse.y;
+      } else {
+        canvas.style.cursor = nearest(mouse.x, mouse.y) ? 'grab' : 'default';
+      }
+    });
 
-  canvas.addEventListener('mouseup', () => {
-    if (dragging) {
-      // give it a small random kick on release
-      dragging.vx = (Math.random() - 0.5) * 1.2;
-      dragging.vy = (Math.random() - 0.5) * 1.2;
-      dragging = null;
-    }
-    canvas.style.cursor = 'default';
-  });
+    canvas.addEventListener('mouseup', () => {
+      if (dragging) {
+        dragging.vx = (Math.random() - 0.5) * 1.5;
+        dragging.vy = (Math.random() - 0.5) * 1.5;
+        dragging = null;
+      }
+      canvas.style.cursor = 'default';
+    });
 
-  // touch support
-  canvas.addEventListener('touchstart', e => {
-    e.preventDefault();
-    const t    = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    dragging   = nearestNode(t.clientX - rect.left, t.clientY - rect.top);
-  }, { passive: false });
+    canvas.addEventListener('mouseleave', () => {
+      mouse.x = -9999; mouse.y = -9999;
+      if (dragging) { dragging = null; canvas.style.cursor = 'default'; }
+    });
 
-  canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (!dragging) return;
-    const t    = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    dragging.x = t.clientX - rect.left;
-    dragging.y = t.clientY - rect.top;
-  }, { passive: false });
+    // touch
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const t = e.touches[0], r = canvas.getBoundingClientRect();
+      mouse.x = t.clientX - r.left;
+      mouse.y = t.clientY - r.top;
+      dragging = nearest(mouse.x, mouse.y);
+    }, { passive: false });
 
-  canvas.addEventListener('touchend', () => {
-    if (dragging) {
-      dragging.vx = (Math.random() - 0.5) * 1.2;
-      dragging.vy = (Math.random() - 0.5) * 1.2;
-      dragging = null;
-    }
-  });
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const t = e.touches[0], r = canvas.getBoundingClientRect();
+      mouse.x = t.clientX - r.left;
+      mouse.y = t.clientY - r.top;
+      if (dragging) { dragging.x = mouse.x; dragging.y = mouse.y; }
+    }, { passive: false });
 
-  window.addEventListener('resize', () => { resize(); initNodes(); });
-  resize();
-  initNodes();
-  draw();
+    canvas.addEventListener('touchend', () => {
+      mouse.x = -9999; mouse.y = -9999;
+      if (dragging) {
+        dragging.vx = (Math.random() - 0.5) * 1.5;
+        dragging.vy = (Math.random() - 0.5) * 1.5;
+        dragging = null;
+      }
+    });
+
+    window.addEventListener('resize', () => { resize(); initNodes(); });
+    requestAnimationFrame(() => { resize(); initNodes(); draw(); });
+  })();
 
   // ── NAV SCROLL ──
   window.addEventListener('scroll', () => {
@@ -903,238 +933,201 @@
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // ── MOON CANVAS ──
+  // ── GALAXY CANVAS ──
   (function() {
-    const c  = document.getElementById('moonCanvas');
-    const S  = 600;
-    c.width  = S;
-    c.height = S;
-    const cx = c.getContext('2d');
-    const R  = S / 2;       // moon radius
-    const CX = R, CY = R;   // centre
+    const c   = document.getElementById('galaxyCanvas');
+    const ctx = c.getContext('2d');
 
-    // Seed-based pseudo-random for reproducible surface
-    function mulberry32(seed) {
-      return function() {
-        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
-        let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
-      };
-    }
-    const rand = mulberry32(42);
+    // ── all vars declared first ──
+    let S = 0, H = 0, O = 0;
+    let bgStars  = [];
+    let glxStars = [];
+    let ready    = false;
+    let rot      = 0;
+    let seed     = 77;
 
-    /* ── 1. Clip to circle ── */
-    cx.save();
-    cx.beginPath();
-    cx.arc(CX, CY, R, 0, Math.PI * 2);
-    cx.clip();
-
-    /* ── 2. Base surface gradient ── */
-    const base = cx.createRadialGradient(CX - R*0.15, CY - R*0.15, R*0.05, CX, CY, R);
-    base.addColorStop(0,   '#f0ede6');
-    base.addColorStop(0.4, '#d6d2ca');
-    base.addColorStop(0.75,'#b8b4ac');
-    base.addColorStop(1,   '#8a877f');
-    cx.fillStyle = base;
-    cx.fillRect(0, 0, S, S);
-
-    /* ── 3. Mare (dark flat plains) ── */
-    const mares = [
-      { x: 0.34, y: 0.30, rx: 0.20, ry: 0.16, a: -0.3, op: 0.38 }, // Mare Tranquillitatis
-      { x: 0.28, y: 0.42, rx: 0.16, ry: 0.13, a:  0.2, op: 0.32 }, // Mare Nubium
-      { x: 0.55, y: 0.27, rx: 0.13, ry: 0.10, a: -0.5, op: 0.30 }, // Mare Serenitatis
-      { x: 0.62, y: 0.42, rx: 0.10, ry: 0.08, a:  0.1, op: 0.28 }, // Mare Crisium
-      { x: 0.42, y: 0.58, rx: 0.14, ry: 0.10, a:  0.4, op: 0.25 }, // Mare Fecunditatis
-      { x: 0.50, y: 0.38, rx: 0.09, ry: 0.07, a:  0.0, op: 0.22 }, // Mare Vaporum
-    ];
-    mares.forEach(m => {
-      cx.save();
-      cx.translate(m.x * S, m.y * S);
-      cx.rotate(m.a);
-      const mg = cx.createRadialGradient(0, 0, 0, 0, 0, m.rx * S);
-      mg.addColorStop(0,   `rgba(60,62,68,${m.op})`);
-      mg.addColorStop(0.6, `rgba(65,67,74,${m.op * 0.6})`);
-      mg.addColorStop(1,    'transparent');
-      cx.scale(1, m.ry / m.rx);
-      cx.beginPath();
-      cx.arc(0, 0, m.rx * S, 0, Math.PI * 2);
-      cx.fillStyle = mg;
-      cx.fill();
-      cx.restore();
-    });
-
-    /* ── 4. Surface texture — subtle noise dots ── */
-    for (let i = 0; i < 1800; i++) {
-      const angle = rand() * Math.PI * 2;
-      const r     = Math.sqrt(rand()) * (R - 2);
-      const tx    = CX + r * Math.cos(angle);
-      const ty    = CY + r * Math.sin(angle);
-      const size  = rand() * 1.8 + 0.3;
-      const op    = rand() * 0.07 + 0.02;
-      cx.beginPath();
-      cx.arc(tx, ty, size, 0, Math.PI * 2);
-      cx.fillStyle = rand() > 0.5
-        ? `rgba(0,0,0,${op})`
-        : `rgba(255,255,255,${op * 0.5})`;
-      cx.fill();
+    function rand() {
+      seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5;
+      return (seed >>> 0) / 4294967296;
     }
 
-    /* ── 5. Craters ── */
-    const craters = [
-      // [cx%, cy%, r%, type]  type: 0=normal, 1=large-ray, 2=flooded
-      [0.22, 0.70, 0.055, 1],   // Tycho (large, bright rays)
-      [0.46, 0.20, 0.042, 0],   // Copernicus
-      [0.70, 0.62, 0.032, 0],
-      [0.58, 0.52, 0.026, 0],
-      [0.30, 0.55, 0.022, 2],
-      [0.66, 0.35, 0.020, 0],
-      [0.38, 0.72, 0.018, 0],
-      [0.52, 0.68, 0.016, 0],
-      [0.74, 0.48, 0.014, 0],
-      [0.20, 0.38, 0.013, 0],
-      [0.44, 0.44, 0.012, 2],
-      [0.60, 0.22, 0.011, 0],
-      [0.28, 0.22, 0.010, 0],
-      [0.80, 0.30, 0.009, 0],
-      [0.35, 0.82, 0.009, 0],
-      [0.68, 0.74, 0.008, 0],
-      [0.14, 0.58, 0.008, 0],
-      [0.76, 0.20, 0.007, 0],
-      [0.50, 0.80, 0.007, 0],
-      [0.22, 0.48, 0.006, 0],
-    ];
-
-    // Add ~25 random small craters
-    for (let i = 0; i < 25; i++) {
-      const angle = rand() * Math.PI * 2;
-      const r     = Math.sqrt(rand()) * 0.82;
-      craters.push([
-        0.5 + r * 0.45 * Math.cos(angle),
-        0.5 + r * 0.45 * Math.sin(angle),
-        rand() * 0.007 + 0.003,
-        0
-      ]);
+    function starColor(t) {
+      const p = rand();
+      if (t < 0.12) return [255, (230+rand()*25)|0, (160+rand()*60)|0];
+      if (p < 0.20) return [(160+rand()*30)|0, (190+rand()*30)|0, 255];
+      if (p < 0.50) return [(230+rand()*25)|0, (240+rand()*15)|0, 255];
+      if (p < 0.75) return [255, 255, (230+rand()*25)|0];
+      if (p < 0.90) return [255, (210+rand()*30)|0, (140+rand()*60)|0];
+      return [255, (160+rand()*30)|0, (100+rand()*40)|0];
     }
 
-    craters.forEach(([px, py, pr, type]) => {
-      const x = px * S, y = py * S, r = pr * S;
+    function initStars() {
+      seed = 77;          // reset so galaxy always looks the same
+      bgStars  = [];
+      glxStars = [];
+      const WINDING = 2.9, CORE_R = 10, MAX_R = O * 0.86;
 
-      // Skip if outside moon disc
-      if (Math.hypot(x - CX, y - CY) > R - r * 0.5) return;
+      // Background field (coords relative to canvas centre)
+      for (let i = 0; i < 600; i++) {
+        const a = rand() * Math.PI * 2;
+        const r = Math.sqrt(rand()) * O * 1.4;
+        bgStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
+                       s: rand()*0.8+0.2, op: rand()*0.3+0.05 });
+      }
 
-      // Ray streaks for Tycho-style craters
-      if (type === 1) {
-        const rayCount = 14;
-        for (let i = 0; i < rayCount; i++) {
-          const angle = (i / rayCount) * Math.PI * 2;
-          const len   = r * (5 + rand() * 6);
-          cx.save();
-          cx.translate(x, y);
-          cx.rotate(angle);
-          const rg = cx.createLinearGradient(0, 0, len, 0);
-          rg.addColorStop(0,   'rgba(240,238,230,0.18)');
-          rg.addColorStop(0.4, 'rgba(240,238,230,0.07)');
-          rg.addColorStop(1,   'rgba(240,238,230,0)');
-          cx.beginPath();
-          cx.moveTo(r * 0.9, -r * 0.12);
-          cx.lineTo(len, -r * 0.04);
-          cx.lineTo(len,  r * 0.04);
-          cx.lineTo(r * 0.9,  r * 0.12);
-          cx.fillStyle = rg;
-          cx.fill();
-          cx.restore();
+      // Spiral arms
+      const arms = [
+        { off: 0,            n: 1100 },
+        { off: Math.PI,      n: 1100 },
+        { off: Math.PI*0.5,  n: 400  },
+        { off: Math.PI*1.5,  n: 400  },
+      ];
+      for (const arm of arms) {
+        for (let i = 0; i < arm.n; i++) {
+          const t  = i / arm.n;
+          const rad = CORE_R + t * (MAX_R - CORE_R);
+          const sa  = WINDING * Math.log(rad / CORE_R) + arm.off;
+          const da  = (rand()-0.5) * (0.35 + t*0.95);
+          const dr  = (rand()-0.5) * rad * 0.18;
+          const a   = sa + da;
+          const r   = Math.max(5, rad + dr);
+          const col = starColor(t);
+          glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
+                          s: rand()*1.5+0.3,
+                          r: col[0], g: col[1], b: col[2],
+                          a: (rand()*0.55+0.25)*(1-t*0.35) });
         }
       }
 
-      // Ejecta blanket (bright apron)
-      const ejecta = cx.createRadialGradient(x, y, r * 0.9, x, y, r * (type === 1 ? 2.2 : 1.7));
-      ejecta.addColorStop(0,   type === 2 ? 'rgba(80,82,88,0.5)'    : 'rgba(220,218,210,0.35)');
-      ejecta.addColorStop(0.5, type === 2 ? 'rgba(80,82,88,0.2)'    : 'rgba(210,208,200,0.15)');
-      ejecta.addColorStop(1,   'transparent');
-      cx.beginPath();
-      cx.arc(x, y, r * (type === 1 ? 2.2 : 1.7), 0, Math.PI * 2);
-      cx.fillStyle = ejecta;
-      cx.fill();
-
-      // Crater floor
-      const floor = cx.createRadialGradient(x, y, 0, x, y, r * 0.95);
-      if (type === 2) {
-        // Flooded — dark lava floor
-        floor.addColorStop(0,   'rgba(68,70,76,0.9)');
-        floor.addColorStop(0.7, 'rgba(72,74,80,0.85)');
-        floor.addColorStop(1,   'rgba(80,82,88,0.6)');
-      } else {
-        floor.addColorStop(0,   'rgba(170,167,158,0.7)');
-        floor.addColorStop(0.6, 'rgba(150,147,138,0.8)');
-        floor.addColorStop(1,   'rgba(120,117,110,0.85)');
+      // Core bulge
+      for (let i = 0; i < 800; i++) {
+        const a   = rand() * Math.PI * 2;
+        const r   = Math.pow(rand(), 2.2) * O * 0.26;
+        const col = starColor(0.05);
+        glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
+                        s: rand()*1.1+0.3,
+                        r: col[0], g: col[1], b: col[2],
+                        a: rand()*0.5+0.35 });
       }
-      cx.beginPath();
-      cx.arc(x, y, r * 0.95, 0, Math.PI * 2);
-      cx.fillStyle = floor;
-      cx.fill();
 
-      // Crater wall shadow (bottom-right inner)
-      const shadow = cx.createRadialGradient(x + r*0.2, y + r*0.2, r*0.3, x, y, r);
-      shadow.addColorStop(0,   'transparent');
-      shadow.addColorStop(0.7, 'transparent');
-      shadow.addColorStop(1,   'rgba(0,0,0,0.45)');
-      cx.beginPath();
-      cx.arc(x, y, r, 0, Math.PI * 2);
-      cx.fillStyle = shadow;
-      cx.fill();
-
-      // Crater rim highlight (top-left)
-      const rimAngle = -Math.PI * 0.35;
-      const rim = cx.createLinearGradient(
-        x + Math.cos(rimAngle) * r, y + Math.sin(rimAngle) * r,
-        x - Math.cos(rimAngle) * r, y - Math.sin(rimAngle) * r
-      );
-      rim.addColorStop(0,    'rgba(255,254,248,0.6)');
-      rim.addColorStop(0.08, 'rgba(255,254,248,0.3)');
-      rim.addColorStop(0.2,  'transparent');
-      rim.addColorStop(0.8,  'transparent');
-      rim.addColorStop(1,    'rgba(0,0,0,0.2)');
-      cx.beginPath();
-      cx.arc(x, y, r, 0, Math.PI * 2);
-      cx.strokeStyle = rim;
-      cx.lineWidth   = r * 0.28;
-      cx.stroke();
-
-      // Central peak for large craters
-      if (r > 12 && type !== 2) {
-        const peak = cx.createRadialGradient(x, y, 0, x, y, r * 0.18);
-        peak.addColorStop(0,   'rgba(230,228,220,0.9)');
-        peak.addColorStop(0.5, 'rgba(200,198,190,0.5)');
-        peak.addColorStop(1,   'transparent');
-        cx.beginPath();
-        cx.arc(x, y, r * 0.18, 0, Math.PI * 2);
-        cx.fillStyle = peak;
-        cx.fill();
+      // Halo
+      for (let i = 0; i < 300; i++) {
+        const a = rand() * Math.PI * 2;
+        const r = (rand()*0.4+0.55) * MAX_R;
+        glxStars.push({ x: r*Math.cos(a), y: r*Math.sin(a),
+                        s: rand()*0.7+0.2, r: 200, g: 215, b: 255,
+                        a: rand()*0.18+0.04 });
       }
-    });
 
-    /* ── 6. Limb darkening (edges darker, realistic sphere look) ── */
-    const limb = cx.createRadialGradient(CX, CY, R * 0.55, CX, CY, R);
-    limb.addColorStop(0,   'transparent');
-    limb.addColorStop(0.7, 'transparent');
-    limb.addColorStop(1,   'rgba(0,0,0,0.42)');
-    cx.beginPath();
-    cx.arc(CX, CY, R, 0, Math.PI * 2);
-    cx.fillStyle = limb;
-    cx.fill();
+      ready = true;
+    }
 
-    /* ── 7. Subtle specular highlight ── */
-    const spec = cx.createRadialGradient(CX - R*0.22, CY - R*0.22, 0, CX - R*0.22, CY - R*0.22, R * 0.55);
-    spec.addColorStop(0,   'rgba(255,255,250,0.14)');
-    spec.addColorStop(0.4, 'rgba(255,255,250,0.05)');
-    spec.addColorStop(1,   'transparent');
-    cx.beginPath();
-    cx.arc(CX, CY, R, 0, Math.PI * 2);
-    cx.fillStyle = spec;
-    cx.fill();
+    function resize() {
+      S = c.width  = c.offsetWidth;
+      H = c.height = c.offsetHeight;
+      O = Math.min(S, H) / 2;
+      if (O > 0) { ready = false; initStars(); }
+    }
 
-    cx.restore();
+    const nebulae = [
+      [0.5,         0.32, 0.58, 0.22, [50,  20,180], 0.055],
+      [0.5+Math.PI, 0.32, 0.58, 0.22, [180, 20, 90], 0.055],
+      [2.1,         0.44, 0.49, 0.17, [20,  60,200], 0.045],
+      [2.1+Math.PI, 0.44, 0.49, 0.17, [200, 80, 20], 0.045],
+      [3.7,         0.23, 0.40, 0.14, [100, 20,180], 0.040],
+      [3.7+Math.PI, 0.23, 0.40, 0.14, [180,100, 20], 0.040],
+      [1.2,         0.57, 0.34, 0.13, [20, 140,180], 0.030],
+      [1.2+Math.PI, 0.57, 0.34, 0.13, [180, 60, 20], 0.030],
+    ];
+
+    function draw() {
+      if (!ready) { requestAnimationFrame(draw); return; }
+
+      const cx = S/2, cy = H/2;
+      ctx.clearRect(0, 0, S, H);
+
+      // Background stars
+      ctx.globalCompositeOperation = 'source-over';
+      for (const s of bgStars) {
+        ctx.beginPath();
+        ctx.arc(cx+s.x, cy+s.y, s.s, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(200,215,255,${s.op})`;
+        ctx.fill();
+      }
+
+      // Rotating galaxy centred
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(rot);
+
+      ctx.globalCompositeOperation = 'lighter';
+
+      // Outer halo
+      const halo = ctx.createRadialGradient(0,0,O*0.25,0,0,O*0.92);
+      halo.addColorStop(0,   'rgba(120,60,220,0.06)');
+      halo.addColorStop(0.5, 'rgba(80,40,160,0.03)');
+      halo.addColorStop(1,   'transparent');
+      ctx.beginPath(); ctx.arc(0,0,O*0.92,0,Math.PI*2);
+      ctx.fillStyle = halo; ctx.fill();
+
+      // Nebula clouds
+      for (const [na,nrf,nwf,nhf,nc,nop] of nebulae) {
+        const nr=nrf*O, nw=nwf*O, nh=nhf*O;
+        ctx.save();
+        ctx.rotate(na); ctx.translate(nr,0); ctx.scale(1,nh/nw);
+        const ng = ctx.createRadialGradient(0,0,0,0,0,nw);
+        ng.addColorStop(0,   `rgba(${nc[0]},${nc[1]},${nc[2]},${nop})`);
+        ng.addColorStop(0.5, `rgba(${nc[0]},${nc[1]},${nc[2]},${nop*0.35})`);
+        ng.addColorStop(1,   'transparent');
+        ctx.beginPath(); ctx.arc(0,0,nw,0,Math.PI*2);
+        ctx.fillStyle = ng; ctx.fill();
+        ctx.restore();
+      }
+
+      // Core glow
+      const cg = ctx.createRadialGradient(0,0,0,0,0,O*0.30);
+      cg.addColorStop(0,    'rgba(255,245,195,0.75)');
+      cg.addColorStop(0.10, 'rgba(255,220,130,0.40)');
+      cg.addColorStop(0.28, 'rgba(220,150,70,0.14)');
+      cg.addColorStop(0.55, 'rgba(160,90,50,0.05)');
+      cg.addColorStop(1,    'transparent');
+      ctx.beginPath(); ctx.arc(0,0,O*0.30,0,Math.PI*2);
+      ctx.fillStyle = cg; ctx.fill();
+
+      // Stars
+      for (const s of glxStars) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.s, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(${s.r},${s.g},${s.b},${s.a})`;
+        ctx.fill();
+      }
+
+      // Nucleus
+      const nuc = ctx.createRadialGradient(0,0,0,0,0,20);
+      nuc.addColorStop(0,   'rgba(255,255,248,1.0)');
+      nuc.addColorStop(0.2, 'rgba(255,245,200,0.85)');
+      nuc.addColorStop(0.5, 'rgba(255,210,140,0.35)');
+      nuc.addColorStop(1,   'transparent');
+      ctx.beginPath(); ctx.arc(0,0,20,0,Math.PI*2);
+      ctx.fillStyle = nuc; ctx.fill();
+
+      // Dust / edge fade
+      ctx.globalCompositeOperation = 'source-over';
+      const dust = ctx.createRadialGradient(0,0,O*0.08,0,0,O*0.88);
+      dust.addColorStop(0,   'transparent');
+      dust.addColorStop(0.6, 'rgba(3,4,9,0.05)');
+      dust.addColorStop(1,   'rgba(3,4,9,0.35)');
+      ctx.beginPath(); ctx.arc(0,0,O*0.88,0,Math.PI*2);
+      ctx.fillStyle = dust; ctx.fill();
+
+      ctx.restore();
+      rot += 0.00038;
+      requestAnimationFrame(draw);
+    }
+
+    // Defer so the DOM is fully laid out before we read offsetWidth/Height
+    requestAnimationFrame(() => { resize(); draw(); });
+    window.addEventListener('resize', resize);
   })();
 
   // ── CONTACT FORM ──
