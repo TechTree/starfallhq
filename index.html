@@ -4,6 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Starfall</title>
+  <meta name="description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/brand/favicon-32.svg"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicon-16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/brand/avatar-512.png"/>
+
+  <!-- Open Graph / social previews -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Starfall"/>
+  <meta property="og:description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+  <meta property="og:image" content="/brand/avatar-512.png"/>
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="Starfall"/>
+  <meta name="twitter:description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+  <meta name="twitter:image" content="/brand/avatar-512.png"/>
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -569,24 +587,36 @@
     const mouse = { x: -9999, y: -9999, active: false };
     const REPEL_RAD = 170;
     const REPEL_STR = 1.6;
-    canvas.addEventListener('mousemove', e => {
+    // Listen on WINDOW (not canvas) so text and overlay elements don't
+    // absorb the event. Coords are translated to canvas-local space.
+    window.addEventListener('mousemove', e => {
       const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.active = true;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      // Only active if cursor is over the canvas area
+      if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
+        mouse.x = x; mouse.y = y; mouse.active = true;
+      } else {
+        mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+      }
     });
-    canvas.addEventListener('mouseleave', () => {
-      mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+    // Cursor leaves the document entirely
+    document.addEventListener('mouseout', e => {
+      if (!e.relatedTarget && !e.toElement) {
+        mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+      }
     });
-    canvas.addEventListener('touchmove', e => {
+    window.addEventListener('touchmove', e => {
       const t = e.touches[0];
       if (!t) return;
       const rect = canvas.getBoundingClientRect();
-      mouse.x = t.clientX - rect.left;
-      mouse.y = t.clientY - rect.top;
-      mouse.active = true;
+      const x = t.clientX - rect.left;
+      const y = t.clientY - rect.top;
+      if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
+        mouse.x = x; mouse.y = y; mouse.active = true;
+      }
     }, { passive: true });
-    canvas.addEventListener('touchend', () => {
+    window.addEventListener('touchend', () => {
       mouse.active = false; mouse.x = -9999; mouse.y = -9999;
     });
 

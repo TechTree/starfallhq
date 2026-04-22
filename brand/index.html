@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Starfall — D (Shard) · Files</title>
+<link rel="icon" type="image/svg+xml" href="favicon-32.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plate: #080b0e;
+    --plate2: #0c1117;
+    --text: #dce8f0;
+    --dim: rgba(220, 232, 240, 0.55);
+    --dimmer: rgba(220, 232, 240, 0.3);
+    --line: rgba(220, 232, 240, 0.08);
+    --cyan: #00b4d8;
+    --blue: #0077b6;
+  }
+  html, body { margin: 0; padding: 0; background: var(--plate2); color: var(--text); }
+  body { font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; font-weight: 500; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 64px 40px 120px; }
+  header { margin-bottom: 56px; }
+  h1 { font-weight: 700; font-size: 32px; letter-spacing: -0.01em; margin: 0 0 8px; }
+  h1 .tag { color: var(--cyan); }
+  header p { color: var(--dim); font-size: 15px; line-height: 1.55; margin: 0; max-width: 560px; }
+  h2 {
+    font-weight: 700; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--dimmer); margin: 0 0 20px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+  }
+  section { margin-bottom: 56px; }
+  .grid { display: grid; gap: 20px; }
+  .g-primary { grid-template-columns: 1fr 1fr; }
+  .g-favicons { grid-template-columns: repeat(3, 1fr); align-items: end; }
+  .g-lockup { grid-template-columns: 1fr; }
+  .card {
+    background: var(--plate);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid var(--line);
+  }
+  .preview {
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px 0;
+    min-height: 180px;
+  }
+  .preview img { display: block; max-width: 100%; height: auto; }
+  .meta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 18px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--dim);
+  }
+  .meta .name { font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+  .files { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .files a {
+    color: var(--cyan);
+    text-decoration: none;
+    font: 500 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.04em;
+    padding: 5px 9px;
+    border: 1px solid rgba(0, 180, 216, 0.22);
+    border-radius: 6px;
+    transition: background .15s, border-color .15s;
+  }
+  .files a:hover { background: rgba(0, 180, 216, 0.08); border-color: rgba(0, 180, 216, 0.5); }
+  .favicon-preview {
+    /* tiny favicons need checker bg to show the plate edge */
+    background: repeating-conic-gradient(#16181c 0% 25%, #1d2126 0% 50%) 50% / 14px 14px;
+    border-radius: 12px;
+    padding: 28px;
+  }
+  .favicon-preview img {
+    image-rendering: pixelated;
+  }
+  .note { color: var(--dimmer); font-size: 12px; font-family: ui-monospace, monospace; }
+  footer {
+    margin-top: 80px; padding-top: 28px; border-top: 1px solid var(--line);
+    color: var(--dimmer); font-size: 13px;
+  }
+  footer code {
+    font: 500 12px ui-monospace, monospace; color: var(--dim);
+    background: rgba(255,255,255,0.03); padding: 2px 6px; border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Starfall <span class="tag">· D (Shard)</span></h1>
+      <p>Seven files: SVG sources + PNG exports. SVG is the source of truth — use it anywhere resolution-independence helps. PNGs are provided for platforms that only accept raster.</p>
+    </header>
+
+    <section>
+      <h2>01 · Primary Logo &nbsp;— mark + wordmark, 512×512</h2>
+      <div class="grid g-primary">
+        <div class="card">
+          <div class="preview"><img src="primary-logo-512.svg" alt="Primary logo" width="360"/></div>
+          <div class="meta">
+            <span class="name">primary-logo-512</span>
+            <span class="files">
+              <a href="primary-logo-512.svg" download>svg</a>
+              <a href="primary-logo-512.png" download>png</a>
+            </span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="preview"><img src="mark.svg" alt="Mark only, transparent" width="260"/></div>
+          <div class="meta">
+            <span class="name">mark &nbsp;<span class="note">transparent bg</span></span>
+            <span class="files">
+              <a href="mark.svg" download>svg</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>02 · Avatar &nbsp;— mark only, 512×512</h2>
+      <div class="grid g-lockup">
+        <div class="card">
+          <div class="preview"><img src="avatar-512.svg" alt="Avatar" width="360"/></div>
+          <div class="meta">
+            <span class="name">avatar-512 &nbsp;<span class="note">LinkedIn, Twitter, Slack</span></span>
+            <span class="files">
+              <a href="avatar-512.svg" download>svg</a>
+              <a href="avatar-512.png" download>png</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>03 · Favicons &nbsp;— 64 / 32 / 16</h2>
+      <div class="grid g-favicons">
+        <div class="card">
+          <div class="preview favicon-preview"><img src="favicon-64.png" alt="Favicon 64" width="64" height="64"/></div>
+          <div class="meta">
+            <span class="name">64px</span>
+            <span class="files">
+              <a href="favicon-64.svg" download>svg</a>
+              <a href="favicon-64.png" download>png</a>
+            </span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="preview favicon-preview"><img src="favicon-32.png" alt="Favicon 32" width="32" height="32"/></div>
+          <div class="meta">
+            <span class="name">32px</span>
+            <span class="files">
+              <a href="favicon-32.svg" download>svg</a>
+              <a href="favicon-32.png" download>png</a>
+            </span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="preview favicon-preview"><img src="favicon-16.png" alt="Favicon 16" width="16" height="16"/></div>
+          <div class="meta">
+            <span class="name">16px</span>
+            <span class="files">
+              <a href="favicon-16.svg" download>svg</a>
+              <a href="favicon-16.png" download>png</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>04 · Horizontal Lockup &nbsp;— 900×260</h2>
+      <div class="grid g-lockup">
+        <div class="card">
+          <div class="preview"><img src="horizontal-lockup-900x260.svg" alt="Horizontal lockup" width="720"/></div>
+          <div class="meta">
+            <span class="name">horizontal-lockup-900x260</span>
+            <span class="files">
+              <a href="horizontal-lockup-900x260.svg" download>svg</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Brand colors — cyan <code>#00b4d8</code> · deep blue <code>#0077b6</code> · plate <code>#080b0e</code> · text <code>#dce8f0</code></p>
+      <p>Wordmark — Space Grotesk 700, letter-spacing 0.18em, uppercase. All SVGs are clean, flat, dependency-free. To install the favicon: <code>&lt;link rel="icon" type="image/svg+xml" href="favicon-32.svg"&gt;</code></p>
+    </footer>
+  </div>
+</body>
+</html>

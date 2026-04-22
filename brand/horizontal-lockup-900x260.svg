@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" width="900" height="260">
+  <title>Starfall — Horizontal Lockup</title>
+  <rect x="0" y="0" width="900" height="260" rx="32" ry="32" fill="#080b0e"></rect>
+  
+  <g transform="translate(210 55) scale(1.5)">
+    <path d="M 50 14 L 20 44 L 50 92 Z" fill="#00b4d8"></path>
+    <path d="M 50 14 L 80 44 L 50 92 Z" fill="#0077b6"></path>
+  </g>
+  
+  <rect x="410" y="82" width="1.5" height="96" fill="#dce8f0" opacity="0.12"></rect>
+  
+  <text x="448" y="147" font-family="&#39;Space Grotesk&#39;,&#39;Inter&#39;,system-ui,sans-serif" font-weight="700" font-size="52" letter-spacing="9.36" fill="#dce8f0" dominant-baseline="middle" style="text-transform:uppercase">STARFALL</text>
+</svg>

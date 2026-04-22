@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+  <title>Starfall Mark</title>
+  <path d="M 50 14 L 20 44 L 50 92 Z" fill="#00b4d8"></path>
+  <path d="M 50 14 L 80 44 L 50 92 Z" fill="#0077b6"></path>
+</svg>

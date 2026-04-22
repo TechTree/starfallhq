@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <title>Starfall — Favicon 32</title>
+  <rect x="0" y="0" width="32" height="32" rx="4" ry="4" fill="#080b0e"></rect>
+  <g transform="translate(3.520 3.520) scale(0.24960)">
+    <path d="M 50 14 L 20 44 L 50 92 Z" fill="#00b4d8"></path>
+    <path d="M 50 14 L 80 44 L 50 92 Z" fill="#0077b6"></path>
+  </g>
+</svg>

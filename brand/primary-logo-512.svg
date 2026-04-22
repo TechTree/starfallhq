@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Starfall — Primary Logo</title>
+  <rect x="0" y="0" width="512" height="512" rx="48" ry="48" fill="#080b0e"></rect>
+  
+  <g transform="translate(136 140) scale(2.4)">
+    <path d="M 50 14 L 20 44 L 50 92 Z" fill="#00b4d8"></path>
+    <path d="M 50 14 L 80 44 L 50 92 Z" fill="#0077b6"></path>
+  </g>
+  
+  <text x="256" y="432" font-family="&#39;Space Grotesk&#39;,&#39;Inter&#39;,system-ui,sans-serif" font-weight="700" font-size="36" letter-spacing="6.48" fill="#dce8f0" text-anchor="middle" style="text-transform:uppercase">STARFALL</text>
+</svg>
