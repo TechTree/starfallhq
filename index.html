@@ -521,180 +521,197 @@
 </footer>
 
 <script>
-  // ── PARTICLE NETWORK ──
+  // ── GLOBE HERO ──
+  // two-layer-in-one-canvas port of the axecompute-style globe:
+  //   fibonacci-sphere dots, phase timeline globe → expansion → network → reform
   (function () {
     const canvas = document.getElementById('starCanvas');
     const ctx    = canvas.getContext('2d');
 
-    const NODE_COUNT = 90;
-    const LINK_DIST  = 140;
-    const DRAG_RAD   = 50;
-    const REPEL_RAD  = 110;
-    const REPEL_STR  = 0.4;
-    const NODE_COLOR = '0,180,216';
-    const LINE_COLOR = '0,180,216';
+    // palette sampled from existing CSS vars
+    const ACCENT = '0,180,216';    // --accent
+    const WARM   = '220,232,240';  // --text (cool-white)
+    const GOLD   = '244,114,30';   // --gold (used sparingly)
 
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
     let W = 0, H = 0;
-    let nodes = [];
-    let dragging = null;
-    let mouse = { x: -9999, y: -9999 };
 
     function resize() {
-      W = canvas.width  = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width  = W * DPR;
+      canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
 
-    function initNodes() {
-      nodes = [];
-      for (let i = 0; i < NODE_COUNT; i++) {
-        nodes.push({
-          x:  Math.random() * W,
-          y:  Math.random() * H,
-          vx: (Math.random() - 0.5) * 0.55,
-          vy: (Math.random() - 0.5) * 0.55,
-          r:  Math.random() * 2 + 1.5,
-        });
+    // fibonacci / golden-angle distribution on a unit sphere
+    const N  = window.innerWidth < 700 ? 280 : 480;
+    const GA = Math.PI * (1 + Math.sqrt(5));
+    const dots = [];
+    for (let i = 0; i < N; i++) {
+      const phi   = Math.acos(1 - 2 * (i + 0.5) / N);
+      const theta = GA * i;
+      dots.push({
+        phi, theta,
+        x: 0, y: 0, depth: 1,
+        size: 1.1 + Math.random() * 1.1,
+        twPhase: Math.random() * Math.PI * 2,
+        twAmp:   0.55 + Math.random() * 0.45,
+        tint: Math.random(),
+        lift: 0, radiusMix: 0,
+        nx: 0, ny: 0, vx: 0, vy: 0,
+      });
+    }
+
+    // scripted phase timeline
+    const phases = [
+      { name: 'globe',     duration: 4200 },
+      { name: 'expansion', duration: 1800 },
+      { name: 'network',   duration: 5000 },
+      { name: 'reform',    duration: 2200 },
+    ];
+    let phaseIdx = 0, phaseStart = performance.now(), rotation = 0;
+
+    const reducedMotion =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const ease = t => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+    function onEnterPhase(name) {
+      if (name === 'expansion') {
+        for (const d of dots) {
+          const sx = Math.sin(d.phi) * Math.cos(d.theta + rotation);
+          const sy = Math.cos(d.phi);
+          const kick = 0.8 + Math.random() * 1.0;
+          d.vx = sx * kick + (Math.random() - 0.5) * 0.2;
+          d.vy = -sy * kick + (Math.random() - 0.5) * 0.2;
+          d.nx = 0; d.ny = 0;
+        }
+      }
+      if (name === 'globe') {
+        for (const d of dots) { d.lift = 0; d.nx = 0; d.ny = 0; d.vx = 0; d.vy = 0; }
       }
     }
 
-    function draw() {
+    function draw(now) {
+      const phase   = phases[phaseIdx];
+      const elapsed = now - phaseStart;
+      let p = Math.min(elapsed / phase.duration, 1);
+
+      if (!reducedMotion && elapsed >= phase.duration) {
+        phaseIdx = (phaseIdx + 1) % phases.length;
+        phaseStart = now;
+        onEnterPhase(phases[phaseIdx].name);
+      }
+      if (reducedMotion) { p = 0; } // hold on 'globe' frame
+
+      rotation += reducedMotion ? 0.0008 : 0.0022;
+
       ctx.clearRect(0, 0, W, H);
 
-      for (const n of nodes) {
-        if (n === dragging) continue;
+      const cx = W / 2, cy = H / 2;
+      const R  = Math.min(W, H) * 0.32;
 
-        // gentle mouse repulsion
-        const mdx = n.x - mouse.x;
-        const mdy = n.y - mouse.y;
-        const md  = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (md < REPEL_RAD && md > 0.1) {
-          const force = (1 - md / REPEL_RAD) * REPEL_STR;
-          n.vx += (mdx / md) * force;
-          n.vy += (mdy / md) * force;
+      const pe = ease(p);
+      const n = phase.name;
+      let liftTarget = 0, networkMix = 0, radialTarget = 0;
+      if (n === 'globe')     { liftTarget = 0;       networkMix = 0;              radialTarget = 0; }
+      if (n === 'expansion') { liftTarget = pe;      networkMix = pe * 0.7;       radialTarget = pe * 0.35; }
+      if (n === 'network')   { liftTarget = 1;       networkMix = 1;              radialTarget = 0.35; }
+      if (n === 'reform')    { liftTarget = 1 - pe;  networkMix = (1 - pe) * 0.7; radialTarget = (1 - pe) * 0.35; }
+
+      const lifted = [];
+
+      for (const d of dots) {
+        d.lift      += (liftTarget   - d.lift)      * 0.055;
+        d.radiusMix += (radialTarget - d.radiusMix) * 0.055;
+
+        // sphere → 3d (rotate around Y axis)
+        const th = d.theta + rotation;
+        const sp = Math.sin(d.phi), cp = Math.cos(d.phi);
+        const x3 = sp * Math.cos(th);
+        const y3 = cp;
+        const z3 = sp * Math.sin(th);
+
+        const r  = R * (1 + d.radiusMix);
+        const sx = x3 * r;
+        const sy = -y3 * r;
+
+        // free drift once lifted
+        d.nx += d.vx; d.ny += d.vy;
+        const fx = sx + d.nx, fy = sy + d.ny;
+        const dist = Math.hypot(fx, fy);
+        const maxR = R * 1.7;
+        if (dist > maxR) {
+          const a = Math.atan2(fy, fx);
+          d.nx -= Math.cos(a) * 0.5;
+          d.ny -= Math.sin(a) * 0.5;
+          d.vx *= -0.85; d.vy *= -0.85;
         }
+        const fric = n === 'reform' ? 0.955 : 0.992;
+        d.vx *= fric; d.vy *= fric;
+        if (n === 'reform') { d.nx *= 0.97; d.ny *= 0.97; }
 
-        n.x += n.vx;
-        n.y += n.vy;
-        n.vx *= 0.992;
-        n.vy *= 0.992;
+        const mix = d.lift;
+        const x = cx + sx + d.nx * mix;
+        const y = cy + sy + d.ny * mix;
 
-        // bounce
-        if (n.x < 0) { n.x = 0; n.vx *= -1; }
-        if (n.x > W) { n.x = W; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; }
-        if (n.y > H) { n.y = H; n.vy *= -1; }
+        const backDim = (z3 + 1) / 2;                   // 0 = far side, 1 = near
+        const depth   = mix < 0.5 ? (0.4 + backDim * 0.6) : 1;
+        d.x = x; d.y = y; d.depth = depth;
 
-        // tiny random drift keeps things alive
-        n.vx += (Math.random() - 0.5) * 0.02;
-        n.vy += (Math.random() - 0.5) * 0.02;
-      }
+        d.twPhase += 0.025;
+        const tw = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(d.twPhase)) * d.twAmp;
 
-      // connecting lines
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dx = a.x - b.x, dy = a.y - b.y;
-          const d  = Math.sqrt(dx * dx + dy * dy);
-          if (d > LINK_DIST) continue;
-          const alpha = (1 - d / LINK_DIST) * 0.45;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(${LINE_COLOR},${alpha})`;
-          ctx.lineWidth   = 0.8;
-          ctx.stroke();
-        }
-      }
+        const baseRGB = d.tint < 0.80 ? ACCENT : d.tint < 0.95 ? WARM : GOLD;
+        const alpha   = (0.55 + 0.35 * tw) * depth;
 
-      // nodes
-      for (const n of nodes) {
-        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
-        g.addColorStop(0, `rgba(${NODE_COLOR},0.25)`);
-        g.addColorStop(1, `rgba(${NODE_COLOR},0)`);
+        // soft halo (same style as the prior particle-network nodes)
+        const halo = ctx.createRadialGradient(x, y, 0, x, y, d.size * 4.5);
+        halo.addColorStop(0, `rgba(${baseRGB},${0.22 * depth})`);
+        halo.addColorStop(1, `rgba(${baseRGB},0)`);
+        ctx.fillStyle = halo;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
-        ctx.fillStyle = g;
+        ctx.arc(x, y, d.size * 4.5, 0, Math.PI * 2);
         ctx.fill();
 
+        // solid dot
+        ctx.fillStyle = `rgba(${baseRGB},${alpha})`;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${NODE_COLOR},0.85)`;
+        ctx.arc(x, y, d.size * (0.8 + 0.3 * tw), 0, Math.PI * 2);
         ctx.fill();
+
+        if (mix > 0.2) lifted.push(d);
+      }
+
+      // network connections between lifted dots
+      if (networkMix > 0.02 && lifted.length > 1) {
+        ctx.lineWidth = 0.8;
+        const threshold = 100;
+        for (let i = 0; i < lifted.length; i++) {
+          const a = lifted[i];
+          for (let j = i + 1; j < lifted.length; j++) {
+            const b = lifted[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const dd = Math.hypot(dx, dy);
+            if (dd < threshold) {
+              const alpha = (1 - dd / threshold) * 0.42 * networkMix * Math.min(a.lift, b.lift);
+              if (alpha <= 0.005) continue;
+              ctx.strokeStyle = `rgba(${ACCENT},${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+        }
       }
 
       requestAnimationFrame(draw);
     }
 
-    /* ── drag & hover ── */
-    function nearest(px, py) {
-      let best = null, bd = Infinity;
-      for (const n of nodes) {
-        const d = Math.hypot(n.x - px, n.y - py);
-        if (d < bd) { bd = d; best = n; }
-      }
-      return bd < DRAG_RAD ? best : null;
-    }
-
-    canvas.addEventListener('mousedown', e => {
-      const r = canvas.getBoundingClientRect();
-      dragging = nearest(e.clientX - r.left, e.clientY - r.top);
-      if (dragging) canvas.style.cursor = 'grabbing';
-    });
-
-    canvas.addEventListener('mousemove', e => {
-      const r = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - r.left;
-      mouse.y = e.clientY - r.top;
-      if (dragging) {
-        dragging.x = mouse.x;
-        dragging.y = mouse.y;
-      } else {
-        canvas.style.cursor = nearest(mouse.x, mouse.y) ? 'grab' : 'default';
-      }
-    });
-
-    canvas.addEventListener('mouseup', () => {
-      if (dragging) {
-        dragging.vx = (Math.random() - 0.5) * 1.2;
-        dragging.vy = (Math.random() - 0.5) * 1.2;
-        dragging = null;
-      }
-      canvas.style.cursor = 'default';
-    });
-
-    canvas.addEventListener('mouseleave', () => {
-      mouse.x = -9999; mouse.y = -9999;
-      if (dragging) { dragging = null; canvas.style.cursor = 'default'; }
-    });
-
-    // touch
-    canvas.addEventListener('touchstart', e => {
-      e.preventDefault();
-      const t = e.touches[0], r = canvas.getBoundingClientRect();
-      mouse.x = t.clientX - r.left;
-      mouse.y = t.clientY - r.top;
-      dragging = nearest(mouse.x, mouse.y);
-    }, { passive: false });
-
-    canvas.addEventListener('touchmove', e => {
-      e.preventDefault();
-      const t = e.touches[0], r = canvas.getBoundingClientRect();
-      mouse.x = t.clientX - r.left;
-      mouse.y = t.clientY - r.top;
-      if (dragging) { dragging.x = mouse.x; dragging.y = mouse.y; }
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', () => {
-      mouse.x = -9999; mouse.y = -9999;
-      if (dragging) {
-        dragging.vx = (Math.random() - 0.5) * 1.2;
-        dragging.vy = (Math.random() - 0.5) * 1.2;
-        dragging = null;
-      }
-    });
-
-    window.addEventListener('resize', () => { resize(); initNodes(); });
-    requestAnimationFrame(() => { resize(); initNodes(); draw(); });
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(() => { resize(); requestAnimationFrame(draw); });
   })();
 
   // ── NAV SCROLL ──
