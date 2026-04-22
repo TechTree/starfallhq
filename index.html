@@ -560,8 +560,35 @@
         tint: Math.random(),
         lift: 0, radiusMix: 0,
         nx: 0, ny: 0, vx: 0, vy: 0,
+        // cursor-driven damped-spring offset (works in every phase)
+        rx: 0, ry: 0, rvx: 0, rvy: 0,
       });
     }
+
+    // cursor tracking for repulsion
+    const mouse = { x: -9999, y: -9999, active: false };
+    const REPEL_RAD = 170;
+    const REPEL_STR = 1.6;
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+    });
+    canvas.addEventListener('mouseleave', () => {
+      mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+    });
+    canvas.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      if (!t) return;
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = t.clientX - rect.left;
+      mouse.y = t.clientY - rect.top;
+      mouse.active = true;
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => {
+      mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+    });
 
     // scripted phase timeline
     const phases = [
@@ -653,10 +680,30 @@
         if (n === 'reform') { d.nx *= 0.97; d.ny *= 0.97; }
 
         const mix = d.lift;
-        const x = cx + sx + d.nx * mix;
-        const y = cy + sy + d.ny * mix;
+        let x = cx + sx + d.nx * mix;
+        let y = cy + sy + d.ny * mix;
 
-        const backDim = (z3 + 1) / 2;                   // 0 = far side, 1 = near
+        // cursor repulsion — damped spring, decays to zero when cursor leaves
+        if (mouse.active) {
+          const mdx = x - mouse.x;
+          const mdy = y - mouse.y;
+          const md  = Math.hypot(mdx, mdy);
+          if (md > 0.1 && md < REPEL_RAD) {
+            const force = (1 - md / REPEL_RAD) * REPEL_STR;
+            d.rvx += (mdx / md) * force;
+            d.rvy += (mdy / md) * force;
+          }
+        }
+        d.rvx += -d.rx * 0.028;                           // spring pulling back (lazier)
+        d.rvy += -d.ry * 0.028;
+        d.rvx *= 0.88;                                    // damping (lets motion carry further)
+        d.rvy *= 0.88;
+        d.rx  += d.rvx;
+        d.ry  += d.rvy;
+        x += d.rx;
+        y += d.ry;
+
+        const backDim = (z3 + 1) / 2;                     // 0 = far side, 1 = near
         const depth   = mix < 0.5 ? (0.4 + backDim * 0.6) : 1;
         d.x = x; d.y = y; d.depth = depth;
 
