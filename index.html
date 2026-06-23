@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Starfall</title>
-  <meta name="description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+  <title>Starfall — Web & App Development Studio</title>
+  <meta name="description" content="Starfall is an indie web development studio. Fast websites, apps, SEO, and growth systems for ambitious teams."/>
 
   <!-- Favicons -->
   <link rel="icon" href="/favicon.ico?v=2" sizes="any"/>
@@ -15,12 +15,12 @@
 
   <!-- Open Graph / social previews -->
   <meta property="og:type" content="website"/>
-  <meta property="og:title" content="Starfall"/>
-  <meta property="og:description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+  <meta property="og:title" content="Starfall — Web & App Development Studio"/>
+  <meta property="og:description" content="Indie web development studio. Fast websites, apps, SEO, and growth systems."/>
   <meta property="og:image" content="/brand/avatar-512.png"/>
-  <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:title" content="Starfall"/>
-  <meta name="twitter:description" content="Starfall — a personal web project with a cosmic, interactive aesthetic."/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Starfall — Web & App Development Studio"/>
+  <meta name="twitter:description" content="Indie web development studio. Fast websites, apps, SEO, and growth systems."/>
   <meta name="twitter:image" content="/brand/avatar-512.png"/>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -448,6 +448,271 @@
       section { padding: 80px 24px; }
       footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
     }
+
+    /* ── SERVICE POINTS ── */
+    .service-points {
+      list-style: none;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .service-points li {
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .service-points li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 9px;
+      top: 3px;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg); }
+    .about-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-body {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.85;
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+    .about-facts {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .about-fact {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .about-fact-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .about-fact span:last-child {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .about-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-orb {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(0,180,216,0.18), rgba(0,119,182,0.06) 60%, transparent 80%);
+      border: 1px solid rgba(0,180,216,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .about-orb::before {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,180,216,0.08);
+    }
+    .about-orb-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio {
+      background: var(--bg2);
+      position: relative;
+    }
+    #portfolio::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--gold), transparent);
+    }
+    .portfolio-header { text-align: center; margin-bottom: 72px; }
+    .portfolio-header .section-sub { margin: 0 auto; }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .portfolio-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .portfolio-card:hover {
+      border-color: rgba(0,180,216,0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,180,216,0.1);
+    }
+    .portfolio-preview {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .portfolio-browser-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 1;
+    }
+    .browser-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .portfolio-url {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 6px;
+      font-family: monospace;
+    }
+    .portfolio-preview-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 36px;
+    }
+    .portfolio-preview-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e8f4fb;
+    }
+    .portfolio-preview-sub {
+      font-size: 11px;
+      color: #4a7a9b;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .portfolio-content { padding: 28px 28px 24px; }
+    .portfolio-content h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .portfolio-content p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 18px; }
+    .portfolio-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .portfolio-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(0,180,216,0.1);
+      border: 1px solid rgba(0,180,216,0.2);
+      color: var(--accent);
+    }
+    .portfolio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .portfolio-link:hover { gap: 10px; }
+
+    /* ── PASSION PROJECTS ── */
+    #passion { background: var(--bg); }
+    .passion-header { text-align: center; margin-bottom: 72px; }
+    .passion-header .section-sub { margin: 0 auto; }
+    .passion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .passion-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .passion-card:hover {
+      border-color: rgba(244,114,30,0.4);
+      transform: translateY(-4px);
+    }
+    .passion-icon { font-size: 32px; margin-bottom: 18px; display: block; }
+    .passion-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .passion-card p { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
+    .passion-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .passion-link:hover { gap: 10px; }
+
+    /* ── FOOTER SOCIAL ── */
+    .footer-left { display: flex; flex-direction: column; gap: 6px; }
+    .social-links { display: flex; gap: 12px; align-items: center; }
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,180,216,0.08); }
+    .social-link svg { width: 16px; height: 16px; }
+
+    @media (max-width: 768px) {
+      .about-inner { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { display: none; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -458,6 +723,8 @@
   <a href="#" class="logo">Starfall</a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#portfolio">Work</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#contact" class="nav-cta">Get Started</a></li>
   </ul>
@@ -468,9 +735,9 @@
   <canvas id="starCanvas"></canvas>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="badge">✦ &nbsp;Welcome to the Future</div>
-    <h1>Built for what's next.</h1>
-    <p class="hero-sub">Starfall helps ambitious teams move faster, build smarter, and launch things that actually matter.</p>
+    <div class="badge">✦ &nbsp;Indie Dev Studio</div>
+    <h1>We build things that actually work.</h1>
+    <p class="hero-sub">A small, focused studio — web, apps, SEO, and growth. No overhead, no handoffs. Just clean work, shipped fast.</p>
     <div class="btn-group">
       <a href="#contact" class="btn btn-primary">Get Started &rarr;</a>
       <a href="#services" class="btn btn-ghost">See What We Do</a>
@@ -490,26 +757,135 @@
       <div class="service-icon" style="background:rgba(0,180,216,0.13)">🌐</div>
       <h3>Web Development</h3>
       <p>Fast, polished websites built from scratch. Whether it's a landing page or a full product — we ship clean code that performs.</p>
+      <ul class="service-points">
+        <li>Landing pages, marketing sites &amp; web apps</li>
+        <li>Performance-first — fast loads built in</li>
+        <li>Mobile-responsive, clean code you own</li>
+      </ul>
     </div>
     <div class="service-card reveal reveal-delay-2">
       <div class="service-icon" style="background:rgba(244,114,30,0.13)">📱</div>
       <h3>App Development</h3>
       <p>Mobile and web apps built for real users. From concept to launch, we handle architecture, design, and delivery.</p>
+      <ul class="service-points">
+        <li>Web apps and native mobile</li>
+        <li>End-to-end: architecture, design, and delivery</li>
+        <li>Built for real users, not demos</li>
+      </ul>
     </div>
     <div class="service-card reveal reveal-delay-3">
       <div class="service-icon" style="background:rgba(0,180,216,0.13)">🔍</div>
       <h3>SEO</h3>
       <p>Get found. We build search strategies that drive compounding organic traffic — technical SEO, content, and authority combined.</p>
+      <ul class="service-points">
+        <li>Technical audits and on-page fixes</li>
+        <li>Content and keyword strategy</li>
+        <li>Authority building that compounds over time</li>
+      </ul>
     </div>
     <div class="service-card reveal reveal-delay-4">
       <div class="service-icon" style="background:rgba(244,114,30,0.13)">📈</div>
       <h3>Growth & Analytics</h3>
       <p>Data-driven decisions, not guesses. We instrument, analyze, and optimize every step of your funnel to turn visitors into customers.</p>
+      <ul class="service-points">
+        <li>Funnel instrumentation and tracking setup</li>
+        <li>Conversion rate optimization</li>
+        <li>Monthly reporting with actual insight</li>
+      </ul>
     </div>
   </div>
 </section>
 
 
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner reveal">
+    <div class="about-text">
+      <p class="section-label">About</p>
+      <h2 class="section-title">Not an agency.<br/>A builder.</h2>
+      <p class="about-body">Starfall is a one-person studio. You work directly with the person writing your code — no account managers, no handoffs, no bloat. I keep a small client list so every project gets proper attention and ships right.</p>
+      <div class="about-facts">
+        <div class="about-fact">
+          <span class="about-fact-num">5+</span>
+          <span>Years on the web</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">10+</span>
+          <span>Projects shipped</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">3</span>
+          <span>Max active clients</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="about-orb">
+        <div class="about-orb-label">Indie<br/>Studio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-header reveal">
+    <p class="section-label">Work</p>
+    <h2 class="section-title">Things we've built.</h2>
+    <p class="section-sub">Real projects, real results.</p>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-card reveal reveal-delay-1">
+      <div class="portfolio-preview">
+        <div class="portfolio-browser-bar">
+          <span class="browser-dot" style="background:#ff5f57"></span>
+          <span class="browser-dot" style="background:#febc2e"></span>
+          <span class="browser-dot" style="background:#28c840"></span>
+          <span class="portfolio-url">xdcommercial.com</span>
+        </div>
+        <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #0d1a2a, #0a2438);">
+          <div class="portfolio-preview-title">XD Commercial</div>
+          <div class="portfolio-preview-sub">Commercial Real Estate</div>
+        </div>
+      </div>
+      <div class="portfolio-content">
+        <h3>XD Commercial</h3>
+        <p>Owner-operated commercial real estate firm in Maryland. Full site covering brokerage, property management, investment group, and an insights blog — built for credibility and lead generation.</p>
+        <div class="portfolio-tags">
+          <span class="portfolio-tag">Web Dev</span>
+          <span class="portfolio-tag">SEO</span>
+          <span class="portfolio-tag">Real Estate</span>
+        </div>
+        <a href="https://xdcommercial.com" target="_blank" rel="noopener" class="portfolio-link">Visit Site →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PASSION PROJECTS -->
+<section id="passion">
+  <div class="passion-header reveal">
+    <p class="section-label">Passion Projects</p>
+    <h2 class="section-title">Built for the love of it.</h2>
+    <p class="section-sub">Side projects made for fun — no briefs, no deadlines, just craft.</p>
+  </div>
+  <div class="passion-grid">
+    <!-- FILL IN: replace the two cards below with your actual Warhammer sites -->
+    <div class="passion-card reveal reveal-delay-1">
+      <span class="passion-icon">⚔️</span>
+      <h3>[Your Warhammer Site Name]</h3>
+      <p>[Brief description of what this site does — hobby tracker, resource hub, army builder, etc.]</p>
+      <a href="[URL]" target="_blank" rel="noopener" class="passion-link">Visit →</a>
+    </div>
+    <div class="passion-card reveal reveal-delay-2">
+      <span class="passion-icon">🛡️</span>
+      <h3>[Your Warhammer Site Name]</h3>
+      <p>[Brief description of what this site does — hobby tracker, resource hub, army builder, etc.]</p>
+      <a href="[URL]" target="_blank" rel="noopener" class="passion-link">Visit →</a>
+    </div>
+  </div>
+</section>
 
 <!-- CTA -->
 <!-- CONTACT -->
@@ -535,8 +911,24 @@
 
 <!-- FOOTER -->
 <footer>
-  <a href="#" class="logo">Starfall</a>
-  <p>© 2026 Starfall. All rights reserved.</p>
+  <div class="footer-left">
+    <a href="#" class="logo">Starfall</a>
+    <p>© 2026 Starfall. All rights reserved.</p>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#passion">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="social-links">
+    <a href="https://linkedin.com/in/YOUR_HANDLE" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="https://github.com/YOUR_HANDLE" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
+  </div>
 </footer>
 
 <script>
