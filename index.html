@@ -48,7 +48,7 @@
       overflow-x: hidden;
     }
 
-    /* ── CANVAS HERO ── */
+    /* ── HERO ── */
     #hero {
       position: relative;
       min-height: 100vh;
@@ -57,19 +57,32 @@
       justify-content: center;
       text-align: center;
       overflow: hidden;
+      /* subtle dot-grid background */
+      background-image: radial-gradient(circle, rgba(0,180,216,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
 
-    #starCanvas {
+    /* Flanking side-panel canvases (hidden below 1100px) */
+    .hero-sides {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      pointer-events: none;
+      z-index: 1;
     }
+    @media (max-width: 1100px) { .hero-sides { display: none; } }
+
+    #leftPanel, #rightPanel {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: clamp(100px, calc((100vw - 860px) / 2 + 40px), 380px);
+    }
+    #leftPanel  { left: 0; }
+    #rightPanel { right: 0; }
 
     .hero-glow {
       position: absolute;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(0,180,216,0.14) 0%, transparent 70%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(0,180,216,0.16) 0%, transparent 65%);
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -732,7 +745,11 @@
 
 <!-- HERO -->
 <section id="hero">
-  <canvas id="starCanvas"></canvas>
+  <!-- Flanking constellation panels (xl screens only) -->
+  <div class="hero-sides" aria-hidden="true">
+    <canvas id="leftPanel"></canvas>
+    <canvas id="rightPanel"></canvas>
+  </div>
   <div class="hero-glow"></div>
   <div class="hero-content">
     <div class="badge">✦ &nbsp;Indie Dev Studio</div>
@@ -988,7 +1005,8 @@
   // ── GLOBE HERO ──
   // two-layer-in-one-canvas port of the axecompute-style globe:
   //   fibonacci-sphere dots, phase timeline globe → expansion → network → reform
-  (function () {
+  // Saved globe animation — call window._savedGlobeAnim() to restore (also add <canvas id="starCanvas"> back to hero HTML)
+  window._savedGlobeAnim = function () {
     const canvas = document.getElementById('starCanvas');
     const ctx    = canvas.getContext('2d');
 
@@ -1235,6 +1253,116 @@
 
     window.addEventListener('resize', resize);
     requestAnimationFrame(() => { resize(); requestAnimationFrame(draw); });
+  }; // end _savedGlobeAnim
+
+  // ── SIDE PANEL ANIMATION ──
+  // Constellation node-network art flanking the hero on wide screens.
+  (function () {
+    const C_CYAN = [0, 180, 216];   // --accent
+    const C_GOLD = [244, 114, 30];  // --gold
+
+    function initPanel(el, isRight) {
+      if (!el) return;
+      const ctx = el.getContext('2d');
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+      let W = 0, H = 0;
+
+      function resize() {
+        W = el.offsetWidth;
+        H = el.offsetHeight;
+        if (!W || !H) return;
+        el.width  = W * DPR;
+        el.height = H * DPR;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      // 50 nodes; first 7 are hub nodes (larger, brighter)
+      const nodes = Array.from({ length: 50 }, (_, i) => ({
+        x:   Math.random(),
+        y:   Math.random(),
+        vx:  (Math.random() - 0.5) * 0.00032,
+        vy:  (Math.random() - 0.5) * 0.00032,
+        r:   1.3 + Math.random() * 1.7,
+        hub: i < 7,
+        ph:  Math.random() * Math.PI * 2,
+        spd: 0.008 + Math.random() * 0.015,
+        col: Math.random() < 0.87 ? C_CYAN : C_GOLD,
+      }));
+
+      // Returns 0 at the inner (hero-facing) edge → 1 at outer edge.
+      // Reaches full opacity by 65% of the way out.
+      function innerFade(xFrac) {
+        const dist = isRight ? xFrac : (1 - xFrac);
+        return Math.min(dist / 0.65, 1);
+      }
+
+      function frame() {
+        if (!W || !H) { requestAnimationFrame(frame); return; }
+        ctx.clearRect(0, 0, W, H);
+
+        for (const n of nodes) {
+          n.x += n.vx; n.y += n.vy; n.ph += n.spd;
+          if (n.x < 0 || n.x > 1) { n.vx *= -1; n.x = Math.max(0, Math.min(1, n.x)); }
+          if (n.y < 0 || n.y > 1) { n.vy *= -1; n.y = Math.max(0, Math.min(1, n.y)); }
+        }
+
+        // Edges
+        const maxD   = W * 0.3;
+        const maxDsq = maxD * maxD;
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          const ax = a.x * W, ay = a.y * H;
+          const fa = innerFade(a.x);
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b  = nodes[j];
+            const bx = b.x * W, by = b.y * H;
+            const dx = ax - bx, dy = ay - by;
+            const dsq = dx * dx + dy * dy;
+            if (dsq > maxDsq) continue;
+            const rf   = Math.min(fa, innerFade(b.x));
+            const dist = Math.sqrt(dsq);
+            const al   = (1 - dist / maxD) * 0.38 * rf;
+            if (al < 0.008) continue;
+            ctx.strokeStyle = `rgba(${C_CYAN[0]},${C_CYAN[1]},${C_CYAN[2]},${al})`;
+            ctx.lineWidth   = 0.65;
+            ctx.beginPath();
+            ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+            ctx.stroke();
+          }
+        }
+
+        // Nodes
+        for (const n of nodes) {
+          const x = n.x * W, y = n.y * H;
+          const rf = innerFade(n.x);
+          if (rf < 0.02) continue;
+          const pulse = 0.65 + 0.35 * Math.sin(n.ph);
+          const r     = n.hub ? n.r * 2.2 : n.r;
+          const al    = pulse * rf * (n.hub ? 0.92 : 0.72);
+          const [cr, cg, cb] = n.col;
+
+          // Soft glow halo
+          const g = ctx.createRadialGradient(x, y, 0, x, y, r * 7);
+          g.addColorStop(0, `rgba(${cr},${cg},${cb},${0.2 * al})`);
+          g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(x, y, r * 7, 0, Math.PI * 2); ctx.fill();
+
+          // Core dot
+          ctx.fillStyle = `rgba(${cr},${cg},${cb},${al})`;
+          ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      requestAnimationFrame(frame);
+    }
+
+    initPanel(document.getElementById('leftPanel'),  false);
+    initPanel(document.getElementById('rightPanel'), true);
   })();
 
   // ── NAV SCROLL ──
