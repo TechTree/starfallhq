@@ -57,9 +57,14 @@
       justify-content: center;
       text-align: center;
       overflow: hidden;
-      /* subtle dot-grid background */
-      background-image: radial-gradient(circle, rgba(0,180,216,0.07) 1px, transparent 1px);
-      background-size: 28px 28px;
+    }
+
+    #auroraCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
     /* Flanking side-panel canvases (hidden below 1100px) */
@@ -219,21 +224,6 @@
     }
     .nav-cta:hover { background: rgba(0,180,216,0.22) !important; }
 
-    /* ── SCROLL REVEAL ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-
     /* ── SECTIONS ── */
     section { padding: 120px 48px; }
 
@@ -301,7 +291,6 @@
 
     .service-card:hover {
       border-color: rgba(0,180,216,0.4);
-      transform: translateY(-6px);
       box-shadow: 0 20px 60px rgba(0,180,216,0.1);
     }
 
@@ -591,7 +580,6 @@
     }
     .portfolio-card:hover {
       border-color: rgba(0,180,216,0.4);
-      transform: translateY(-6px);
       box-shadow: 0 20px 60px rgba(0,180,216,0.1);
     }
     .portfolio-preview {
@@ -683,13 +671,52 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 32px 28px;
+      padding: 20px 24px 28px;
       transition: border-color 0.3s, transform 0.3s;
     }
     .passion-card:hover {
       border-color: rgba(244,114,30,0.4);
-      transform: translateY(-4px);
     }
+    .service-card, .portfolio-card, .passion-card {
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .portfolio-screenshot {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .portfolio-preview-inner {
+      position: relative;
+    }
+
+    .passion-preview {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+      background: var(--bg2);
+    }
+    .passion-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .passion-card:hover .passion-preview img {
+      transform: scale(1.04);
+    }
+
     .passion-icon { font-size: 32px; margin-bottom: 18px; display: block; }
     .passion-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
     .passion-card p { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
@@ -729,6 +756,8 @@
       .portfolio-grid { grid-template-columns: 1fr; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
@@ -747,6 +776,7 @@
 
 <!-- HERO -->
 <section id="hero">
+  <canvas id="auroraCanvas"></canvas>
   <!-- Flanking constellation panels (xl screens only) -->
   <div class="hero-sides" aria-hidden="true">
     <canvas id="leftPanel"></canvas>
@@ -864,8 +894,7 @@
           <span class="portfolio-url">xdcommercial.com</span>
         </div>
         <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #0d1a2a, #0a2438);">
-          <div class="portfolio-preview-title">XD Commercial</div>
-          <div class="portfolio-preview-sub">Commercial Real Estate</div>
+          <img src="https://image.thum.io/get/width/800/crop/500/https://xdcommercial.com" alt="XD Commercial screenshot" class="portfolio-screenshot" loading="lazy">
         </div>
       </div>
       <div class="portfolio-content">
@@ -888,8 +917,7 @@
           <span class="portfolio-url">play.google.com · Android</span>
         </div>
         <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #0d1a14, #0a2018);">
-          <div class="portfolio-preview-title">AIAudioTranscriber</div>
-          <div class="portfolio-preview-sub">Android · $4.99</div>
+          <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.ai.audiotranscriptionapp" alt="AIAudioTranscriber screenshot" class="portfolio-screenshot" loading="lazy">
         </div>
       </div>
       <div class="portfolio-content">
@@ -912,8 +940,7 @@
           <span class="portfolio-url">play.google.com · Android</span>
         </div>
         <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #081a10, #0a2216);">
-          <div class="portfolio-preview-title">Dark Pool Monitor</div>
-          <div class="portfolio-preview-sub">Finance · Trading</div>
+          <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.vzmotivation.dixgex" alt="Dark Pool Monitor screenshot" class="portfolio-screenshot" loading="lazy">
         </div>
       </div>
       <div class="portfolio-content">
@@ -939,18 +966,27 @@
   </div>
   <div class="passion-grid">
     <div class="passion-card reveal reveal-delay-1">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://armageddon-narrative.vercel.app/" alt="Armageddon Crusade screenshot" loading="lazy">
+      </div>
       <span class="passion-icon">⚔️</span>
       <h3>Armageddon Crusade</h3>
       <p>A narrative campaign ledger for Warhammer 40K's War for Armageddon. Interactive maps of hive cities and warzones, galactic theatre overviews, and a full crusade tracker for battle honours, scars, and warlord progression.</p>
       <a href="https://armageddon-narrative.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
     </div>
     <div class="passion-card reveal reveal-delay-2">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://the-maelstrom.vercel.app/" alt="The Maelstrom screenshot" loading="lazy">
+      </div>
       <span class="passion-icon">🛡️</span>
       <h3>The Maelstrom</h3>
       <p>A live campaign tracker for a private Warhammer 40K Raid & Ruin group. Tracks standings, army rosters, battle results, Notoriety Points, and Spoils of War rolls across six competing warlords.</p>
       <a href="https://the-maelstrom.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
     </div>
     <div class="passion-card reveal reveal-delay-3">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.InfinitelyUs" alt="InfinitelyUs screenshot" loading="lazy">
+      </div>
       <span class="passion-icon">💬</span>
       <h3>InfinitelyUs</h3>
       <p>An Android app for deepening connections. Hundreds of questions spanning relationships, personal, and money categories to help two people unlock a new level of knowing each other.</p>
@@ -1257,6 +1293,89 @@
     requestAnimationFrame(() => { resize(); requestAnimationFrame(draw); });
   }; // end _savedGlobeAnim
 
+  // ── AURORA BACKGROUND ──
+  (function () {
+    const canvas = document.getElementById('auroraCanvas');
+    if (!canvas) return;
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (!gl) { canvas.style.display = 'none'; return; }
+
+    const vs = `attribute vec2 pos;void main(){gl_Position=vec4(pos,0.,1.);}`;
+    const fs = `
+      precision mediump float;
+      uniform float uTime;
+      uniform vec2 uRes;
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){
+        vec2 i=floor(p),f=fract(p);
+        f=f*f*(3.0-2.0*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),
+                   mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
+      }
+      float fbm(vec2 p){
+        return 0.5*noise(p)+0.25*noise(p*2.0)+0.125*noise(p*4.0)+0.0625*noise(p*8.0);
+      }
+      void main(){
+        vec2 uv=gl_FragCoord.xy/uRes;
+        float t=uTime*0.12;
+        vec2 q=vec2(fbm(uv+t*0.8),fbm(uv+1.7+t*0.6));
+        vec2 r=vec2(fbm(uv+4.0*q+vec2(1.7,9.2)+t*0.5),
+                    fbm(uv+4.0*q+vec2(8.3,2.8)+t*0.4));
+        float f=fbm(uv+3.5*r);
+        vec3 bg=vec3(0.031,0.043,0.055);
+        vec3 c1=vec3(0.0,0.549,0.663);
+        vec3 c2=vec3(0.0,0.290,0.440);
+        vec3 gd=vec3(0.957,0.447,0.118);
+        vec3 col=mix(bg,c2,clamp(f*f*3.5,0.0,1.0)*0.55);
+        col=mix(col,c1,clamp(f*2.2-0.4,0.0,1.0)*0.32);
+        col=mix(col,gd,clamp(f*3.5-2.5,0.0,1.0)*0.07);
+        vec2 vig=uv*(1.0-uv.yx);
+        float v=pow(vig.x*vig.y*15.0,0.25);
+        col=mix(bg*0.95,col,v*0.85);
+        gl_FragColor=vec4(col,1.0);
+      }
+    `;
+
+    function makeShader(type, src) {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s); return s;
+    }
+    const prog = gl.createProgram();
+    gl.attachShader(prog, makeShader(gl.VERTEX_SHADER, vs));
+    gl.attachShader(prog, makeShader(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog); gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const posLoc = gl.getAttribLocation(prog, 'pos');
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(prog, 'uTime');
+    const uRes  = gl.getUniformLocation(prog, 'uRes');
+    let W = 0, H = 0;
+
+    function resize() {
+      W = canvas.offsetWidth; H = canvas.offsetHeight;
+      if (!W || !H) return;
+      canvas.width = W; canvas.height = H;
+      gl.viewport(0, 0, W, H);
+    }
+
+    function frame(t) {
+      if (!W) resize();
+      gl.uniform1f(uTime, t * 0.001);
+      gl.uniform2f(uRes, W, H);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(frame);
+  })();
+
   // ── SIDE PANEL ANIMATION ──
   // Constellation node-network art flanking the hero on wide screens.
   (function () {
@@ -1376,17 +1495,59 @@
     document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
   });
 
-  // ── SCROLL REVEAL ──
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
+  // ── SCROLL REVEAL (GSAP) ──
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // Hero entrance
+    gsap.from('.hero-content .badge',    { y: 24, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+    gsap.from('.hero-content h1',        { y: 40, opacity: 0, duration: 1.0, delay: 0.4, ease: 'power3.out' });
+    gsap.from('.hero-content .hero-sub', { y: 24, opacity: 0, duration: 0.8, delay: 0.65, ease: 'power3.out' });
+    gsap.from('.hero-content .btn-group',{ y: 24, opacity: 0, duration: 0.8, delay: 0.85, ease: 'power3.out' });
+
+    // Services
+    gsap.from('.services-header', { scrollTrigger: { trigger: '#services', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
+    gsap.from('.service-card',    { scrollTrigger: { trigger: '.services-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' });
+
+    // About
+    gsap.from('.about-inner',     { scrollTrigger: { trigger: '#about', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
+
+    // Portfolio
+    gsap.from('.portfolio-header',{ scrollTrigger: { trigger: '#portfolio', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
+    gsap.from('.portfolio-card',  { scrollTrigger: { trigger: '.portfolio-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.13, duration: 0.85, ease: 'power3.out' });
+
+    // Passion
+    gsap.from('.passion-header',  { scrollTrigger: { trigger: '#passion', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
+    gsap.from('.passion-card',    { scrollTrigger: { trigger: '.passion-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' });
+
+    // Contact
+    gsap.from('#contact .section-label, #contact .section-title, #contact .section-sub, #contact .contact-form', {
+      scrollTrigger: { trigger: '#contact', start: 'top 72%' },
+      y: 36, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out'
+    });
+  }
+
+  // ── 3D CARD TILT ──
+  (function () {
+    function tilt(selector, maxDeg) {
+      document.querySelectorAll(selector).forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r  = card.getBoundingClientRect();
+          const x  = (e.clientX - r.left) / r.width  - 0.5;
+          const y  = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transform = `perspective(900px) rotateX(${-y * maxDeg * 2}deg) rotateY(${x * maxDeg * 2}deg) translateY(-5px) scale(1.01)`;
+          card.style.transition = 'transform 0.1s ease, border-color 0.3s, box-shadow 0.3s';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.transition = 'transform 0.5s ease, border-color 0.3s, box-shadow 0.3s';
+        });
+      });
+    }
+    tilt('.service-card',   7);
+    tilt('.portfolio-card', 5);
+    tilt('.passion-card',   7);
+  })();
 
   // ── CONTACT FORM ──
   document.getElementById('contactForm').addEventListener('submit', async function(e) {
