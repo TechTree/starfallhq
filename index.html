@@ -777,7 +777,6 @@
     .cursor-ring.hover { width: 54px; height: 54px; border-color: rgba(244,114,30,0.45); }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 </head>
 <body>
 
@@ -1395,16 +1394,9 @@
   })();
 
 
-  // ── LENIS SMOOTH SCROLL ──
-  const lenis = typeof Lenis !== 'undefined' ? new Lenis({ lerp: 0.08, smoothWheel: true }) : null;
-  if (lenis) {
-    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
-  }
-
   // ── NAV SCROLL ──
-  (lenis || window).addEventListener('scroll', (e) => {
-    const y = lenis ? e.scroll : window.scrollY;
-    document.getElementById('nav').classList.toggle('scrolled', y > 40);
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
   });
 
   // ── SCROLL-DRIVEN PARALLAX ──
@@ -1433,11 +1425,7 @@
     });
   }
 
-  if (lenis) {
-    lenis.on('scroll', ({ scroll }) => onScroll(scroll));
-  } else {
-    window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
-  }
+  window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
   onScroll(window.scrollY || 0);
 
   // ── CUSTOM CURSOR ──
