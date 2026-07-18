@@ -738,12 +738,51 @@
       .about-visual { display: none; }
       .portfolio-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── CUSTOM CURSOR ── */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      a, button, .service-card, .portfolio-card, .passion-card { cursor: none; }
+    }
+    .cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      box-shadow: 0 0 8px var(--accent);
+      transition: opacity 0.3s, width 0.2s, height 0.2s, background 0.2s;
+      will-change: left, top;
+    }
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(0,180,216,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s, width 0.35s ease, height 0.35s ease, border-color 0.35s ease;
+      will-change: left, top;
+    }
+    .cursor-dot.visible  { opacity: 1; }
+    .cursor-ring.visible { opacity: 1; }
+    .cursor-dot.hover  { width: 10px; height: 10px; background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+    .cursor-ring.hover { width: 54px; height: 54px; border-color: rgba(244,114,30,0.45); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script defer src="/_vercel/insights/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 </head>
 <body>
+
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -1356,42 +1395,129 @@
   })();
 
 
+  // ── LENIS SMOOTH SCROLL ──
+  const lenis = typeof Lenis !== 'undefined' ? new Lenis({ lerp: 0.08, smoothWheel: true }) : null;
+  if (lenis) {
+    (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
+  }
+
   // ── NAV SCROLL ──
-  window.addEventListener('scroll', () => {
-    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  (lenis || window).addEventListener('scroll', (e) => {
+    const y = lenis ? e.scroll : window.scrollY;
+    document.getElementById('nav').classList.toggle('scrolled', y > 40);
   });
 
-  // ── SCROLL REVEAL (GSAP) ──
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
+  // ── SCROLL-DRIVEN PARALLAX ──
+  function onScroll(scrollY) {
+    // Hero fades and drifts upward as you scroll away
+    const heroContent = document.querySelector('.hero-content');
+    const aurora = document.getElementById('auroraCanvas');
+    if (heroContent) {
+      const drift = scrollY * 0.22;
+      const fade  = Math.max(0, 1 - scrollY / 520);
+      heroContent.style.transform = `translateY(${drift}px)`;
+      heroContent.style.opacity   = fade;
+    }
+    if (aurora) {
+      aurora.style.transform = `translateY(${scrollY * 0.08}px)`;
+    }
 
-    // Hero entrance
-    gsap.from('.hero-content .badge',    { y: 24, opacity: 0, duration: 0.8, delay: 0.2, ease: 'power3.out' });
-    gsap.from('.hero-content h1',        { y: 40, opacity: 0, duration: 1.0, delay: 0.4, ease: 'power3.out' });
-    gsap.from('.hero-content .hero-sub', { y: 24, opacity: 0, duration: 0.8, delay: 0.65, ease: 'power3.out' });
-    gsap.from('.hero-content .btn-group',{ y: 24, opacity: 0, duration: 0.8, delay: 0.85, ease: 'power3.out' });
-
-    // Services
-    gsap.from('.services-header', { scrollTrigger: { trigger: '#services', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
-    gsap.from('.service-card',    { scrollTrigger: { trigger: '.services-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' });
-
-    // About
-    gsap.from('.about-inner',     { scrollTrigger: { trigger: '#about', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
-
-    // Portfolio
-    gsap.from('.portfolio-header',{ scrollTrigger: { trigger: '#portfolio', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
-    gsap.from('.portfolio-card',  { scrollTrigger: { trigger: '.portfolio-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.13, duration: 0.85, ease: 'power3.out' });
-
-    // Passion
-    gsap.from('.passion-header',  { scrollTrigger: { trigger: '#passion', start: 'top 72%' }, y: 48, opacity: 0, duration: 0.9, ease: 'power3.out' });
-    gsap.from('.passion-card',    { scrollTrigger: { trigger: '.passion-grid', start: 'top 78%' }, y: 56, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' });
-
-    // Contact
-    gsap.from('#contact .section-label, #contact .section-title, #contact .section-sub, #contact .contact-form', {
-      scrollTrigger: { trigger: '#contact', start: 'top 72%' },
-      y: 36, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out'
+    // Section headings — subtle upward parallax as viewport passes over them
+    document.querySelectorAll('.section-title, .section-label').forEach(el => {
+      const rect  = el.getBoundingClientRect();
+      const vh    = window.innerHeight;
+      const prog  = 1 - rect.top / vh; // 0 at bottom of screen → 1 at top
+      if (prog > -0.2 && prog < 1.4) {
+        el.style.transform = `translateY(${(prog - 0.5) * -14}px)`;
+      }
     });
   }
+
+  if (lenis) {
+    lenis.on('scroll', ({ scroll }) => onScroll(scroll));
+  } else {
+    window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
+  }
+  onScroll(window.scrollY || 0);
+
+  // ── CUSTOM CURSOR ──
+  (function () {
+    const dot  = document.querySelector('.cursor-dot');
+    const ring = document.querySelector('.cursor-ring');
+    if (!dot || !ring) return;
+
+    let mx = -200, my = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+      dot.classList.add('visible');
+      ring.classList.add('visible');
+    });
+
+    document.addEventListener('mouseleave', () => {
+      dot.classList.remove('visible');
+      ring.classList.remove('visible');
+    });
+
+    // Lazy ring follows dot
+    (function trackRing() {
+      rx += (mx - rx) * 0.11;
+      ry += (my - ry) * 0.11;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(trackRing);
+    })();
+
+    // Expand on hover
+    const hoverEls = document.querySelectorAll('a, button, .service-card, .portfolio-card, .passion-card');
+    hoverEls.forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+  })();
+
+  // ── HERO TEXT SCRAMBLE ──
+  (function () {
+    const h1 = document.querySelector('#hero h1');
+    if (!h1) return;
+    const final  = h1.textContent;
+    const chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
+    let frame    = 0;
+    const total  = 38;
+
+    function tick() {
+      h1.textContent = final.split('').map((ch, i) => {
+        if (ch === ' ') return ' ';
+        if (i < frame / 1.6) return ch;
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      frame++;
+      if (frame <= total) requestAnimationFrame(tick);
+      else h1.textContent = final;
+    }
+
+    window.addEventListener('load', () => setTimeout(tick, 350));
+  })();
+
+  // ── MAGNETIC BUTTONS ──
+  (function () {
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.28;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.38;
+        btn.style.transform  = `translate(${x}px, ${y}px)`;
+        btn.style.transition = 'transform 0.12s ease';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform  = '';
+        btn.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+      });
+    });
+  })();
+
 
   // ── 3D CARD TILT ──
   (function () {
