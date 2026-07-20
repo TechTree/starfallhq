@@ -669,11 +669,12 @@
 
     .portfolio-screenshot {
       position: absolute;
-      inset: 0;
+      left: 0; right: 0;
+      top: 36px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      height: calc(100% - 36px);
+      object-fit: contain;
+      object-position: center center;
       display: block;
     }
     .portfolio-preview-inner {
@@ -693,8 +694,8 @@
     .passion-preview img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: top center;
+      object-fit: contain;
+      object-position: center center;
       display: block;
       transition: transform 0.4s ease;
     }
