@@ -264,10 +264,17 @@
     }
 
     .service-icon {
-      font-size: 28px;
-      margin-bottom: 18px;
-      display: block;
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+      background: rgba(23,131,255,0.08);
+      border: 1px solid rgba(23,131,255,0.16);
+      transition: background 0.3s, color 0.3s;
     }
+    .service-icon svg { width: 22px; height: 22px; }
+    .service-card:hover .service-icon { background: var(--accent); color: #fff; }
 
     .service-card h3 {
       font-family: 'Space Grotesk', sans-serif;
@@ -283,33 +290,6 @@
       line-height: 1.7;
     }
 
-    /* ── STATS ── */
-    #stats {
-      padding: 80px 48px;
-      background: var(--bg);
-    }
-
-    .stats-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 48px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 56px;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .stat-label { color: var(--muted); font-size: 14px; font-weight: 500; }
-
-    /* ── CTA ── */
     /* ── CONTACT ── */
     #contact {
       background: var(--bg2);
@@ -412,9 +392,48 @@
     }
     .footer-links a:hover { color: var(--text); }
 
+    /* ── MOBILE NAV ── */
+    .nav-toggle {
+      display: none;
+      width: 40px; height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .nav-toggle span {
+      display: block; width: 18px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+    nav.open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+    nav.open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
-      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .nav-links {
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 8px 24px 20px;
+        background: rgba(255,255,255,0.98);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity 0.2s, transform 0.2s;
+      }
+      nav.open .nav-links { opacity: 1; transform: none; pointer-events: auto; }
+      .nav-links li a { display: block; padding: 14px 0; font-size: 16px; border-bottom: 1px solid var(--border2); }
+      .nav-links li:last-child a { border-bottom: none; }
+      .nav-links .nav-cta { margin-top: 12px; text-align: center; padding: 12px 16px !important; border-radius: 10px; }
       section { padding: 80px 24px; }
       footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
     }
@@ -779,12 +798,15 @@
 <!-- NAV -->
 <nav id="nav">
   <a href="#" class="logo">Starfall</a>
-  <ul class="nav-links">
+  <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#passion">Projects</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#portfolio">Work</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#contact" class="nav-cta">Get Started</a></li>
+    <li><a href="#contact" class="nav-cta">Get in Touch</a></li>
   </ul>
 </nav>
 
@@ -792,107 +814,24 @@
 <section id="hero">
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-content">
-    <h1>We build things.</h1>
+    <h1>I build things.</h1>
     <p class="hero-sub">A small, focused studio covering web, apps, SEO, and growth. No overhead, no handoffs. Just clean work, shipped fast.</p>
     <div class="btn-group">
       <a href="#contact" class="btn btn-primary">Get Started &rarr;</a>
-      <a href="#services" class="btn btn-ghost">See What We Do</a>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section id="services">
-  <div class="services-header reveal">
-    <p class="section-label">What We Do</p>
-    <h2 class="section-title">Everything you need<br/>to reach orbit.</h2>
-    <p class="section-sub">From strategy to execution, we handle the hard parts so you can focus on building.</p>
-  </div>
-  <div class="services-grid">
-    <div class="service-card reveal reveal-delay-1">
-      <div class="service-icon" style="background:rgba(23,131,255,0.10)">🌐</div>
-      <h3>Web Development</h3>
-      <p>Fast, polished websites built from scratch. Whether it's a landing page or a full product, we ship clean code that performs.</p>
-      <ul class="service-points">
-        <li>Landing pages, marketing sites &amp; web apps</li>
-        <li>Performance-first with fast loads built in</li>
-        <li>Mobile-responsive, clean code you own</li>
-      </ul>
-    </div>
-    <div class="service-card reveal reveal-delay-2">
-      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📱</div>
-      <h3>App Development</h3>
-      <p>Mobile and web apps built for real users. From concept to launch, we handle architecture, design, and delivery.</p>
-      <ul class="service-points">
-        <li>Web apps and native mobile</li>
-        <li>End-to-end: architecture, design, and delivery</li>
-        <li>Built for real users, not demos</li>
-      </ul>
-    </div>
-    <div class="service-card reveal reveal-delay-3">
-      <div class="service-icon" style="background:rgba(23,131,255,0.10)">🔍</div>
-      <h3>SEO</h3>
-      <p>Get found. We build search strategies that drive compounding organic traffic: technical SEO, content, and authority combined.</p>
-      <ul class="service-points">
-        <li>Technical audits and on-page fixes</li>
-        <li>Content and keyword strategy</li>
-        <li>Authority building that compounds over time</li>
-      </ul>
-    </div>
-    <div class="service-card reveal reveal-delay-4">
-      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📈</div>
-      <h3>Growth & Analytics</h3>
-      <p>Data-driven decisions, not guesses. We instrument, analyze, and optimize every step of your funnel to turn visitors into customers.</p>
-      <ul class="service-points">
-        <li>Funnel instrumentation and tracking setup</li>
-        <li>Conversion rate optimization</li>
-        <li>Monthly reporting with actual insight</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-inner reveal">
-    <div class="about-text">
-      <p class="section-label">About</p>
-      <h2 class="section-title">Not an agency.<br/>A builder.</h2>
-      <p class="about-body">Starfall is a one-person studio. You work directly with the person writing your code. No account managers, no handoffs, no bloat. I keep a small client list so every project gets proper attention and ships right.</p>
-      <div class="about-facts">
-        <div class="about-fact">
-          <span class="about-fact-num">5+</span>
-          <span>Years on the web</span>
-        </div>
-        <div class="about-fact">
-          <span class="about-fact-num">10+</span>
-          <span>Projects shipped</span>
-        </div>
-        <div class="about-fact">
-          <span class="about-fact-num">3</span>
-          <span>Max active clients</span>
-        </div>
-      </div>
-    </div>
-    <div class="about-visual">
-      <div class="about-orb">
-        <div class="about-orb-label">Indie<br/>Studio</div>
-      </div>
+      <a href="#portfolio" class="btn btn-ghost">See My Work</a>
     </div>
   </div>
 </section>
 
 <!-- PORTFOLIO -->
 <section id="portfolio">
-  <div class="portfolio-header reveal">
+  <div class="portfolio-header">
     <p class="section-label">Work</p>
-    <h2 class="section-title">Things we've built.</h2>
+    <h2 class="section-title">Things I've built.</h2>
     <p class="section-sub">Real projects, real results.</p>
   </div>
   <div class="portfolio-grid">
-    <div class="portfolio-card reveal reveal-delay-1">
+    <div class="portfolio-card">
       <div class="portfolio-preview">
         <div class="portfolio-browser-bar">
           <span class="browser-dot" style="background:#ff5f57"></span>
@@ -915,7 +854,7 @@
         <a href="https://xdcommercial.com" target="_blank" rel="noopener" class="portfolio-link">Visit Site →</a>
       </div>
     </div>
-    <div class="portfolio-card reveal reveal-delay-2">
+    <div class="portfolio-card">
       <div class="portfolio-preview">
         <div class="portfolio-browser-bar">
           <span class="browser-dot" style="background:#ff5f57"></span>
@@ -938,7 +877,7 @@
         <a href="https://play.google.com/store/apps/details?id=com.ai.audiotranscriptionapp" target="_blank" rel="noopener" class="portfolio-link">View on Play Store →</a>
       </div>
     </div>
-    <div class="portfolio-card reveal reveal-delay-3">
+    <div class="portfolio-card">
       <div class="portfolio-preview">
         <div class="portfolio-browser-bar">
           <span class="browser-dot" style="background:#ff5f57"></span>
@@ -966,13 +905,13 @@
 
 <!-- PASSION PROJECTS -->
 <section id="passion">
-  <div class="passion-header reveal">
+  <div class="passion-header">
     <p class="section-label">Passion Projects</p>
     <h2 class="section-title">Built for the love of it.</h2>
     <p class="section-sub">Side projects made for fun. No briefs, no deadlines, just craft.</p>
   </div>
   <div class="passion-grid">
-    <div class="passion-card reveal reveal-delay-1">
+    <div class="passion-card">
       <div class="passion-preview">
         <img src="https://image.thum.io/get/width/800/crop/500/https://armageddon-narrative.vercel.app/" alt="Armageddon Crusade screenshot" loading="lazy">
       </div>
@@ -981,7 +920,7 @@
       <p>A narrative campaign ledger for Warhammer 40K's War for Armageddon. Interactive maps of hive cities and warzones, galactic theatre overviews, and a full crusade tracker for battle honours, scars, and warlord progression.</p>
       <a href="https://armageddon-narrative.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
     </div>
-    <div class="passion-card reveal reveal-delay-2">
+    <div class="passion-card">
       <div class="passion-preview">
         <img src="https://image.thum.io/get/width/800/crop/500/https://the-maelstrom.vercel.app/" alt="The Maelstrom screenshot" loading="lazy">
       </div>
@@ -990,7 +929,7 @@
       <p>A live campaign tracker for a private Warhammer 40K Raid & Ruin group. Tracks standings, army rosters, battle results, Notoriety Points, and Spoils of War rolls across six competing warlords.</p>
       <a href="https://the-maelstrom.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
     </div>
-    <div class="passion-card reveal reveal-delay-3">
+    <div class="passion-card">
       <div class="passion-preview">
         <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.InfinitelyUs" alt="InfinitelyUs screenshot" loading="lazy">
       </div>
@@ -1002,24 +941,104 @@
   </div>
 </section>
 
-<!-- CTA -->
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <p class="section-label">What I Do</p>
+    <h2 class="section-title">Everything you need<br/>to reach orbit.</h2>
+    <p class="section-sub">From strategy to execution, I handle the hard parts so you can focus on building.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></div>
+      <h3>Web Development</h3>
+      <p>Fast, polished websites built from scratch. Whether it's a landing page or a full product, I ship clean code that performs.</p>
+      <ul class="service-points">
+        <li>Landing pages, marketing sites &amp; web apps</li>
+        <li>Performance-first with fast loads built in</li>
+        <li>Mobile-responsive, clean code you own</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></div>
+      <h3>App Development</h3>
+      <p>Mobile and web apps built for real users. From concept to launch, I handle architecture, design, and delivery.</p>
+      <ul class="service-points">
+        <li>Web apps and native mobile</li>
+        <li>End-to-end: architecture, design, and delivery</li>
+        <li>Built for real users, not demos</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20.5 20.5-4.9-4.9"/></svg></div>
+      <h3>SEO</h3>
+      <p>Get found. I build search strategies that drive compounding organic traffic: technical SEO, content, and authority combined.</p>
+      <ul class="service-points">
+        <li>Technical audits and on-page fixes</li>
+        <li>Content and keyword strategy</li>
+        <li>Authority building that compounds over time</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="m4 15 5-5 4 4 7-7"/><path d="M15 7h5v5"/></svg></div>
+      <h3>Growth & Analytics</h3>
+      <p>Data-driven decisions, not guesses. I instrument, analyze, and optimize every step of your funnel to turn visitors into customers.</p>
+      <ul class="service-points">
+        <li>Funnel instrumentation and tracking setup</li>
+        <li>Conversion rate optimization</li>
+        <li>Monthly reporting with actual insight</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <p class="section-label">About</p>
+      <h2 class="section-title">Not an agency.<br/>A builder.</h2>
+      <p class="about-body">Starfall is a one-person studio. You work directly with the person writing your code. No account managers, no handoffs, no bloat. I keep a small client list so every project gets proper attention and ships right.</p>
+      <div class="about-facts">
+        <div class="about-fact">
+          <span class="about-fact-num">5+</span>
+          <span>Years on the web</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">10+</span>
+          <span>Projects shipped</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">3</span>
+          <span>Max active clients</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="about-orb">
+        <div class="about-orb-label">Indie<br/>Studio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <p class="section-label reveal">Ready?</p>
-    <h2 class="section-title reveal">Let's build something<br/>unforgettable.</h2>
-    <p class="section-sub reveal" style="margin: 0 auto;">Whether you have a fully-formed idea or just a spark, drop us a message and we'll get back to you within 24 hours.</p>
-    <form class="contact-form reveal" id="contactForm">
+    <p class="section-label">Ready?</p>
+    <h2 class="section-title">Let's build something<br/>unforgettable.</h2>
+    <p class="section-sub" style="margin: 0 auto;">Whether you have a fully-formed idea or just a spark, drop me a message and I'll get back to you within 24 hours.</p>
+    <form class="contact-form" id="contactForm">
       <div class="form-row">
         <input type="text"  name="name"  placeholder="Your name"  required />
         <input type="email" name="email" placeholder="Your email" required />
       </div>
       <input type="text" name="subject" placeholder="Subject" />
-      <textarea name="message" placeholder="Tell us about your project..." required></textarea>
+      <textarea name="message" placeholder="Tell me about your project..." required></textarea>
       <button type="submit" class="btn btn-primary">Send Message &rarr;</button>
     </form>
     <div class="form-success" id="formSuccess">
-      ✦ &nbsp;Message sent! We'll be in touch soon.
+      ✦ &nbsp;Message sent! I'll be in touch soon.
     </div>
   </div>
 </section>
@@ -1031,9 +1050,10 @@
     <p>© 2026 Starfall. All rights reserved.</p>
   </div>
   <ul class="footer-links">
-    <li><a href="#services">Services</a></li>
     <li><a href="#portfolio">Work</a></li>
     <li><a href="#passion">Projects</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="social-links">
@@ -1130,6 +1150,21 @@
     resize();
     window.addEventListener('resize', resize);
     requestAnimationFrame(frame);
+  })();
+
+  // ── MOBILE MENU ──
+  (function() {
+    const nav = document.getElementById('nav');
+    const toggle = document.getElementById('navToggle');
+    if (!nav || !toggle) return;
+    function setOpen(open) {
+      nav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
+    nav.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
   })();
 
   // ── NAV SCROLL ──
@@ -1285,12 +1320,12 @@
       } else {
         btn.textContent = 'Send Message →';
         btn.disabled = false;
-        alert('Something went wrong. Please email us directly at vzasyp@gmail.com');
+        alert('Something went wrong. Please email me directly at vzasyp@gmail.com');
       }
     } catch {
       btn.textContent = 'Send Message →';
       btn.disabled = false;
-      alert('Network error. Please email us directly at vzasyp@gmail.com');
+      alert('Network error. Please email me directly at vzasyp@gmail.com');
     }
   });
 </script>

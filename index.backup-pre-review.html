@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Starfall | Web & App Development Studio</title>
+  <meta name="description" content="Starfall is an indie web development studio. Fast websites, apps, SEO, and growth systems for ambitious teams."/>
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico?v=2" sizes="any"/>
+  <link rel="icon" type="image/svg+xml" href="/brand/favicon-32.svg?v=2"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png?v=2"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicon-16.png?v=2"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/brand/avatar-512.png?v=2"/>
+
+  <!-- Open Graph / social previews -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="Starfall | Web & App Development Studio"/>
+  <meta property="og:description" content="Indie web development studio. Fast websites, apps, SEO, and growth systems."/>
+  <meta property="og:image" content="/brand/avatar-512.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Starfall | Web & App Development Studio"/>
+  <meta name="twitter:description" content="Indie web development studio. Fast websites, apps, SEO, and growth systems."/>
+  <meta name="twitter:image" content="/brand/avatar-512.png"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #ffffff;
+      --bg2:     #f5f7fa;
+      --bg3:     #eef1f5;
+      --text:    #0d0e10;
+      --muted:   #6b7280;
+      --accent:  #1783ff;
+      --accent2: #0d5fcc;
+      --gold:    #f4721e;
+      --border:  rgba(0,0,0,0.09);
+      --border2: rgba(0,0,0,0.04);
+      --card:    #ffffff;
+      --shadow:  0 2px 24px rgba(0,0,0,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    /* Radial blue glow behind the hero content */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(23,131,255,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 700px;
+      padding: 0 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(23,131,255,0.08);
+      border: 1px solid rgba(23,131,255,0.2);
+      color: var(--accent);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+
+    #hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(44px, 6vw, 80px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 0 auto 40px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--bg2); border-color: rgba(0,0,0,0.18); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav.scrolled {
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 1px 20px rgba(0,0,0,0.06);
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff !important;
+      border-radius: 8px;
+      padding: 7px 16px !important;
+    }
+    .nav-cta:hover { background: var(--accent2) !important; }
+
+    /* ── SECTIONS ── */
+    section { padding: 120px 48px; background: var(--bg); }
+
+    .section-label {
+      color: var(--accent);
+      background: rgba(23,131,255,0.08);
+      border: 1px solid rgba(23,131,255,0.18);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    /* ── SERVICES ── */
+    #services {
+      background: var(--bg2);
+      position: relative;
+    }
+
+    .services-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+    .services-header .section-sub { margin: 0 auto; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+
+    .service-card:hover {
+      border-color: rgba(23,131,255,0.3);
+      box-shadow: 0 8px 40px rgba(23,131,255,0.10);
+    }
+
+    .service-icon {
+      font-size: 28px;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .service-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── STATS ── */
+    #stats {
+      padding: 80px 48px;
+      background: var(--bg);
+    }
+
+    .stats-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 48px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label { color: var(--muted); font-size: 14px; font-weight: 500; }
+
+    /* ── CTA ── */
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--bg2);
+      position: relative;
+    }
+    .contact-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-form {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      resize: none;
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--muted); }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(23,131,255,0.08);
+    }
+    .contact-form textarea { min-height: 140px; }
+    .contact-form .btn-primary {
+      align-self: stretch;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 32px;
+      background: rgba(23,131,255,0.08);
+      border: 1px solid rgba(23,131,255,0.2);
+      border-radius: 16px;
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 500;
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      padding: 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    footer p { color: var(--muted); font-size: 14px; }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 80px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── SERVICE POINTS ── */
+    .service-points {
+      list-style: none;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .service-points li {
+      font-size: 13px;
+      color: var(--muted);
+      padding-left: 18px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .service-points li::before {
+      content: '✦';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 9px;
+      top: 3px;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg); }
+    .about-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-body {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.85;
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+    .about-facts {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .about-fact {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .about-fact-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .about-fact span:last-child {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .about-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      min-height: 240px;
+    }
+    .about-orb {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(23,131,255,0.12), rgba(13,95,204,0.04) 60%, transparent 80%);
+      border: 1px solid rgba(23,131,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .about-orb::before {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(23,131,255,0.08);
+    }
+    .about-orb-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio {
+      background: var(--bg2);
+      position: relative;
+    }
+    .portfolio-header { text-align: center; margin-bottom: 72px; }
+    .portfolio-header .section-sub { margin: 0 auto; }
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .portfolio-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .portfolio-card:hover {
+      border-color: rgba(23,131,255,0.3);
+      box-shadow: 0 12px 48px rgba(23,131,255,0.10);
+    }
+    .portfolio-preview {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .portfolio-browser-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      background: rgba(0,0,0,0.03);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 1;
+    }
+    .browser-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .portfolio-url {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 6px;
+      font-family: monospace;
+    }
+    .portfolio-preview-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 36px;
+    }
+    .portfolio-preview-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #e8f4fb;
+    }
+    .portfolio-preview-sub {
+      font-size: 11px;
+      color: #4a7a9b;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .portfolio-content { padding: 28px 28px 24px; }
+    .portfolio-content h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .portfolio-content p { color: var(--muted); font-size: 14px; line-height: 1.7; margin-bottom: 18px; }
+    .portfolio-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .portfolio-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: rgba(23,131,255,0.08);
+      border: 1px solid rgba(23,131,255,0.18);
+      color: var(--accent);
+    }
+    .portfolio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .portfolio-link:hover { gap: 10px; }
+
+    /* ── PASSION PROJECTS ── */
+    #passion { background: var(--bg); }
+    .passion-header { text-align: center; margin-bottom: 72px; }
+    .passion-header .section-sub { margin: 0 auto; }
+    .passion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .passion-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px 24px 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .passion-card:hover {
+      border-color: rgba(244,114,30,0.3);
+      box-shadow: 0 12px 40px rgba(244,114,30,0.08);
+    }
+    .service-card, .portfolio-card, .passion-card {
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .portfolio-screenshot {
+      position: absolute;
+      left: 0; right: 0;
+      top: 36px;
+      width: 100%;
+      height: calc(100% - 36px);
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+    }
+    .portfolio-preview-inner {
+      position: relative;
+    }
+
+    .passion-preview {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+      background: var(--bg2);
+    }
+    .passion-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .passion-card:hover .passion-preview img {
+      transform: scale(1.04);
+    }
+
+    .passion-icon { font-size: 32px; margin-bottom: 18px; display: block; }
+    .passion-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .passion-card p { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 20px; }
+    .passion-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .passion-link:hover { gap: 10px; }
+
+    /* ── FOOTER SOCIAL ── */
+    .footer-left { display: flex; flex-direction: column; gap: 6px; }
+    .social-links { display: flex; gap: 12px; align-items: center; }
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .social-link:hover { border-color: var(--accent); color: var(--accent); background: rgba(23,131,255,0.08); }
+    .social-link svg { width: 16px; height: 16px; }
+
+    @media (max-width: 768px) {
+      .about-inner { grid-template-columns: 1fr; gap: 40px; }
+      .about-visual { display: none; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      a, button, .service-card, .portfolio-card, .passion-card { cursor: none; }
+    }
+    .cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      box-shadow: 0 0 8px rgba(23,131,255,0.5);
+      transition: opacity 0.3s, width 0.2s, height 0.2s, background 0.2s;
+      will-change: left, top;
+    }
+    .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(23,131,255,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s, width 0.35s ease, height 0.35s ease, border-color 0.35s ease;
+      will-change: left, top;
+    }
+    .cursor-dot.visible  { opacity: 1; }
+    .cursor-ring.visible { opacity: 1; }
+    .cursor-dot.hover  { width: 10px; height: 10px; background: var(--gold); box-shadow: 0 0 12px var(--gold); }
+    .cursor-ring.hover { width: 54px; height: 54px; border-color: rgba(244,114,30,0.4); }
+
+    /* ── HERO CHARACTER GRID CANVAS ── */
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+  </style>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Starfall</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-content">
+    <h1>We build things.</h1>
+    <p class="hero-sub">A small, focused studio covering web, apps, SEO, and growth. No overhead, no handoffs. Just clean work, shipped fast.</p>
+    <div class="btn-group">
+      <a href="#contact" class="btn btn-primary">Get Started &rarr;</a>
+      <a href="#services" class="btn btn-ghost">See What We Do</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <p class="section-label">What We Do</p>
+    <h2 class="section-title">Everything you need<br/>to reach orbit.</h2>
+    <p class="section-sub">From strategy to execution, we handle the hard parts so you can focus on building.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon" style="background:rgba(23,131,255,0.10)">🌐</div>
+      <h3>Web Development</h3>
+      <p>Fast, polished websites built from scratch. Whether it's a landing page or a full product, we ship clean code that performs.</p>
+      <ul class="service-points">
+        <li>Landing pages, marketing sites &amp; web apps</li>
+        <li>Performance-first with fast loads built in</li>
+        <li>Mobile-responsive, clean code you own</li>
+      </ul>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📱</div>
+      <h3>App Development</h3>
+      <p>Mobile and web apps built for real users. From concept to launch, we handle architecture, design, and delivery.</p>
+      <ul class="service-points">
+        <li>Web apps and native mobile</li>
+        <li>End-to-end: architecture, design, and delivery</li>
+        <li>Built for real users, not demos</li>
+      </ul>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon" style="background:rgba(23,131,255,0.10)">🔍</div>
+      <h3>SEO</h3>
+      <p>Get found. We build search strategies that drive compounding organic traffic: technical SEO, content, and authority combined.</p>
+      <ul class="service-points">
+        <li>Technical audits and on-page fixes</li>
+        <li>Content and keyword strategy</li>
+        <li>Authority building that compounds over time</li>
+      </ul>
+    </div>
+    <div class="service-card reveal reveal-delay-4">
+      <div class="service-icon" style="background:rgba(244,114,30,0.13)">📈</div>
+      <h3>Growth & Analytics</h3>
+      <p>Data-driven decisions, not guesses. We instrument, analyze, and optimize every step of your funnel to turn visitors into customers.</p>
+      <ul class="service-points">
+        <li>Funnel instrumentation and tracking setup</li>
+        <li>Conversion rate optimization</li>
+        <li>Monthly reporting with actual insight</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner reveal">
+    <div class="about-text">
+      <p class="section-label">About</p>
+      <h2 class="section-title">Not an agency.<br/>A builder.</h2>
+      <p class="about-body">Starfall is a one-person studio. You work directly with the person writing your code. No account managers, no handoffs, no bloat. I keep a small client list so every project gets proper attention and ships right.</p>
+      <div class="about-facts">
+        <div class="about-fact">
+          <span class="about-fact-num">5+</span>
+          <span>Years on the web</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">10+</span>
+          <span>Projects shipped</span>
+        </div>
+        <div class="about-fact">
+          <span class="about-fact-num">3</span>
+          <span>Max active clients</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="about-orb">
+        <div class="about-orb-label">Indie<br/>Studio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-header reveal">
+    <p class="section-label">Work</p>
+    <h2 class="section-title">Things we've built.</h2>
+    <p class="section-sub">Real projects, real results.</p>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-card reveal reveal-delay-1">
+      <div class="portfolio-preview">
+        <div class="portfolio-browser-bar">
+          <span class="browser-dot" style="background:#ff5f57"></span>
+          <span class="browser-dot" style="background:#febc2e"></span>
+          <span class="browser-dot" style="background:#28c840"></span>
+          <span class="portfolio-url">xdcommercial.com</span>
+        </div>
+        <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #0d1a2a, #0a2438);">
+          <img src="https://image.thum.io/get/width/800/crop/500/https://xdcommercial.com" alt="XD Commercial screenshot" class="portfolio-screenshot" loading="lazy">
+        </div>
+      </div>
+      <div class="portfolio-content">
+        <h3>XD Commercial</h3>
+        <p>Owner-operated commercial real estate firm in Maryland. Full site covering brokerage, property management, investment group, and an insights blog, built for credibility and lead generation.</p>
+        <div class="portfolio-tags">
+          <span class="portfolio-tag">Web Dev</span>
+          <span class="portfolio-tag">SEO</span>
+          <span class="portfolio-tag">Real Estate</span>
+        </div>
+        <a href="https://xdcommercial.com" target="_blank" rel="noopener" class="portfolio-link">Visit Site →</a>
+      </div>
+    </div>
+    <div class="portfolio-card reveal reveal-delay-2">
+      <div class="portfolio-preview">
+        <div class="portfolio-browser-bar">
+          <span class="browser-dot" style="background:#ff5f57"></span>
+          <span class="browser-dot" style="background:#febc2e"></span>
+          <span class="browser-dot" style="background:#28c840"></span>
+          <span class="portfolio-url">play.google.com · Android</span>
+        </div>
+        <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #0d1a14, #0a2018);">
+          <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.ai.audiotranscriptionapp" alt="AIAudioTranscriber screenshot" class="portfolio-screenshot" loading="lazy">
+        </div>
+      </div>
+      <div class="portfolio-content">
+        <h3>AIAudioTranscriber</h3>
+        <p>A paid Android app that converts audio recordings into clean, structured summaries using AI. Handles speech-to-text, noise filtering, and key information extraction in one tap.</p>
+        <div class="portfolio-tags">
+          <span class="portfolio-tag">Android</span>
+          <span class="portfolio-tag">App Dev</span>
+          <span class="portfolio-tag">AI</span>
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.ai.audiotranscriptionapp" target="_blank" rel="noopener" class="portfolio-link">View on Play Store →</a>
+      </div>
+    </div>
+    <div class="portfolio-card reveal reveal-delay-3">
+      <div class="portfolio-preview">
+        <div class="portfolio-browser-bar">
+          <span class="browser-dot" style="background:#ff5f57"></span>
+          <span class="browser-dot" style="background:#febc2e"></span>
+          <span class="browser-dot" style="background:#28c840"></span>
+          <span class="portfolio-url">play.google.com · Android</span>
+        </div>
+        <div class="portfolio-preview-inner" style="background: linear-gradient(160deg, #081a10, #0a2216);">
+          <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.vzmotivation.dixgex" alt="Dark Pool Monitor screenshot" class="portfolio-screenshot" loading="lazy">
+        </div>
+      </div>
+      <div class="portfolio-content">
+        <h3>Dark Pool Monitor</h3>
+        <p>Android app tracking two institutional market indicators: DIX (dark pool buying ratio across the S&P 500) and GEX (dealer gamma exposure). Gives traders a clean daily readout of hidden off-exchange activity.</p>
+        <div class="portfolio-tags">
+          <span class="portfolio-tag">Android</span>
+          <span class="portfolio-tag">App Dev</span>
+          <span class="portfolio-tag">Finance</span>
+        </div>
+        <a href="https://play.google.com/store/apps/details?id=com.vzmotivation.dixgex" target="_blank" rel="noopener" class="portfolio-link">View on Play Store →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PASSION PROJECTS -->
+<section id="passion">
+  <div class="passion-header reveal">
+    <p class="section-label">Passion Projects</p>
+    <h2 class="section-title">Built for the love of it.</h2>
+    <p class="section-sub">Side projects made for fun. No briefs, no deadlines, just craft.</p>
+  </div>
+  <div class="passion-grid">
+    <div class="passion-card reveal reveal-delay-1">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://armageddon-narrative.vercel.app/" alt="Armageddon Crusade screenshot" loading="lazy">
+      </div>
+      <span class="passion-icon">⚔️</span>
+      <h3>Armageddon Crusade</h3>
+      <p>A narrative campaign ledger for Warhammer 40K's War for Armageddon. Interactive maps of hive cities and warzones, galactic theatre overviews, and a full crusade tracker for battle honours, scars, and warlord progression.</p>
+      <a href="https://armageddon-narrative.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
+    </div>
+    <div class="passion-card reveal reveal-delay-2">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://the-maelstrom.vercel.app/" alt="The Maelstrom screenshot" loading="lazy">
+      </div>
+      <span class="passion-icon">🛡️</span>
+      <h3>The Maelstrom</h3>
+      <p>A live campaign tracker for a private Warhammer 40K Raid & Ruin group. Tracks standings, army rosters, battle results, Notoriety Points, and Spoils of War rolls across six competing warlords.</p>
+      <a href="https://the-maelstrom.vercel.app/" target="_blank" rel="noopener" class="passion-link">Visit →</a>
+    </div>
+    <div class="passion-card reveal reveal-delay-3">
+      <div class="passion-preview">
+        <img src="https://image.thum.io/get/width/800/crop/500/https://play.google.com/store/apps/details?id=com.InfinitelyUs" alt="InfinitelyUs screenshot" loading="lazy">
+      </div>
+      <span class="passion-icon">💬</span>
+      <h3>InfinitelyUs</h3>
+      <p>An Android app for deepening connections. Hundreds of questions spanning relationships, personal, and money categories to help two people unlock a new level of knowing each other.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.InfinitelyUs" target="_blank" rel="noopener" class="passion-link">View on Play Store →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label reveal">Ready?</p>
+    <h2 class="section-title reveal">Let's build something<br/>unforgettable.</h2>
+    <p class="section-sub reveal" style="margin: 0 auto;">Whether you have a fully-formed idea or just a spark, drop us a message and we'll get back to you within 24 hours.</p>
+    <form class="contact-form reveal" id="contactForm">
+      <div class="form-row">
+        <input type="text"  name="name"  placeholder="Your name"  required />
+        <input type="email" name="email" placeholder="Your email" required />
+      </div>
+      <input type="text" name="subject" placeholder="Subject" />
+      <textarea name="message" placeholder="Tell us about your project..." required></textarea>
+      <button type="submit" class="btn btn-primary">Send Message &rarr;</button>
+    </form>
+    <div class="form-success" id="formSuccess">
+      ✦ &nbsp;Message sent! We'll be in touch soon.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <a href="#" class="logo">Starfall</a>
+    <p>© 2026 Starfall. All rights reserved.</p>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#passion">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="social-links">
+    <a href="https://www.linkedin.com/in/vlad-zasypkin/" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="https://github.com/TechTree/" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+
+  // ── HERO CHARACTER GRID ──
+  (function() {
+    const hero   = document.getElementById('hero');
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas || !hero) return;
+    const ctx = canvas.getContext('2d');
+
+    const CHARS_CODE = '0123456789(){}[]<>=/+-*;:.,#!~^&|%\\'.split('');
+    const CHARS_GEO  = '▲△▴▵●○◆◇◈■□▪▫'.split('');
+    const CELL = 26;
+
+    let W, H, cols, rows, cells;
+
+    function resize() {
+      W = hero.offsetWidth; H = hero.offsetHeight;
+      canvas.width = W; canvas.height = H;
+      cols = Math.ceil(W / CELL) + 1;
+      rows = Math.ceil(H / CELL) + 1;
+      cells = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const rightHalf = c / cols > 0.52;
+          const pool = rightHalf ? CHARS_GEO : CHARS_CODE;
+          cells.push({
+            ch:    pool[Math.floor(Math.random() * pool.length)],
+            alpha: Math.random(),
+            dir:   Math.random() > 0.5 ? 1 : -1,
+            speed: 0.12 + Math.random() * 0.35,
+            pool,
+          });
+        }
+      }
+    }
+
+    // Radial mask: 0 = center (clear), 1 = edges (full density)
+    function mask(c, r) {
+      const nx = (c / Math.max(cols - 1, 1)) * 2 - 1;
+      const ny = (r / Math.max(rows - 1, 1)) * 2 - 1;
+      const d  = Math.sqrt(nx * nx * 0.65 + ny * ny);
+      return Math.max(0, Math.min(1, (d - 0.28) / 0.52));
+    }
+
+    let prev = performance.now();
+
+    function frame(now) {
+      const dt = Math.min(now - prev, 50);
+      prev = now;
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = '#1783ff';
+
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        const r = Math.floor(i / cols);
+        const c = i % cols;
+        const m = mask(c, r);
+        if (m < 0.01) continue;
+
+        cell.alpha += cell.dir * cell.speed * (dt / 1000);
+        if (cell.alpha >= 1) {
+          cell.alpha = 1; cell.dir = -1;
+          cell.ch = cell.pool[Math.floor(Math.random() * cell.pool.length)];
+        }
+        if (cell.alpha <= 0) { cell.alpha = 0; cell.dir = 1; }
+
+        const a = cell.alpha * m * 0.42;
+        if (a < 0.008) continue;
+
+        ctx.font = `${m > 0.75 ? 12 : 10}px "SF Mono","Fira Code","Courier New",monospace`;
+        ctx.globalAlpha = a;
+        ctx.fillText(cell.ch, (c + 0.5) * CELL, (r + 0.5) * CELL);
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(frame);
+  })();
+
+  // ── NAV SCROLL ──
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ── SCROLL-DRIVEN PARALLAX ──
+  function onScroll(scrollY) {
+    // Hero fades and drifts upward as you scroll away
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+      const drift = scrollY * 0.22;
+      const fade  = Math.max(0, 1 - scrollY / 520);
+      heroContent.style.transform = `translateY(${drift}px)`;
+      heroContent.style.opacity   = fade;
+    }
+
+    // Section headings — subtle upward parallax as viewport passes over them
+    document.querySelectorAll('.section-title, .section-label').forEach(el => {
+      const rect  = el.getBoundingClientRect();
+      const vh    = window.innerHeight;
+      const prog  = 1 - rect.top / vh; // 0 at bottom of screen → 1 at top
+      if (prog > -0.2 && prog < 1.4) {
+        el.style.transform = `translateY(${(prog - 0.5) * -14}px)`;
+      }
+    });
+  }
+
+  window.addEventListener('scroll', () => onScroll(window.scrollY), { passive: true });
+  onScroll(window.scrollY || 0);
+
+  // ── CUSTOM CURSOR ──
+  (function () {
+    const dot  = document.querySelector('.cursor-dot');
+    const ring = document.querySelector('.cursor-ring');
+    if (!dot || !ring) return;
+
+    let mx = -200, my = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+      dot.classList.add('visible');
+      ring.classList.add('visible');
+    });
+
+    document.addEventListener('mouseleave', () => {
+      dot.classList.remove('visible');
+      ring.classList.remove('visible');
+    });
+
+    // Lazy ring follows dot
+    (function trackRing() {
+      rx += (mx - rx) * 0.11;
+      ry += (my - ry) * 0.11;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(trackRing);
+    })();
+
+    // Expand on hover
+    const hoverEls = document.querySelectorAll('a, button, .service-card, .portfolio-card, .passion-card');
+    hoverEls.forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+  })();
+
+  // ── HERO TEXT SCRAMBLE ──
+  (function () {
+    const h1 = document.querySelector('#hero h1');
+    if (!h1) return;
+    const final  = h1.textContent;
+    const chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
+    let frame    = 0;
+    const total  = 38;
+
+    function tick() {
+      h1.textContent = final.split('').map((ch, i) => {
+        if (ch === ' ') return ' ';
+        if (i < frame / 1.6) return ch;
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      frame++;
+      if (frame <= total) requestAnimationFrame(tick);
+      else h1.textContent = final;
+    }
+
+    window.addEventListener('load', () => setTimeout(tick, 350));
+  })();
+
+  // ── MAGNETIC BUTTONS ──
+  (function () {
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.28;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.38;
+        btn.style.transform  = `translate(${x}px, ${y}px)`;
+        btn.style.transition = 'transform 0.12s ease';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform  = '';
+        btn.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+      });
+    });
+  })();
+
+
+  // ── 3D CARD TILT ──
+  (function () {
+    function tilt(selector, maxDeg) {
+      document.querySelectorAll(selector).forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r  = card.getBoundingClientRect();
+          const x  = (e.clientX - r.left) / r.width  - 0.5;
+          const y  = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transform = `perspective(900px) rotateX(${-y * maxDeg * 2}deg) rotateY(${x * maxDeg * 2}deg) translateY(-5px) scale(1.01)`;
+          card.style.transition = 'transform 0.1s ease, border-color 0.3s, box-shadow 0.3s';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.transition = 'transform 0.5s ease, border-color 0.3s, box-shadow 0.3s';
+        });
+      });
+    }
+    tilt('.service-card',   7);
+    tilt('.portfolio-card', 5);
+    tilt('.passion-card',   7);
+  })();
+
+  // ── CONTACT FORM ──
+  document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const data = new FormData(this);
+    data.append('access_key', 'bde5f57b-6ef0-4b49-89f5-d263b0e4d280');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data
+      });
+
+      if (res.ok) {
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        btn.textContent = 'Send Message →';
+        btn.disabled = false;
+        alert('Something went wrong. Please email us directly at vzasyp@gmail.com');
+      }
+    } catch {
+      btn.textContent = 'Send Message →';
+      btn.disabled = false;
+      alert('Network error. Please email us directly at vzasyp@gmail.com');
+    }
+  });
+</script>
+</body>
+</html>
